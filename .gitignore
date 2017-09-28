@@ -1,0 +1,4 @@
+# CSCI447_P1 gitignore
+
+# system rules
+.DS_Store
