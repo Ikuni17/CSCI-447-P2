@@ -5,21 +5,15 @@ num_data_points = int(sys.argv[2])
 output_file_address = str(sys.argv[3])
 output_file = open(output_file_address, 'a')
 
-for i in range(0, num_data_points):
-	
-	output_file.write('\ntest')
-	
-
 def rosen(inputs):
-	for i in inputs:
-		print(str(i))
+	return sum(list(inputs))
 
-def input_gen(type, num):
-	inputs = 0
+def input_gen(type, dimensions):
+	inputs = []
 # 	use 1 for sequential inputs
 	if int(type) == 1: 
 		for i in range(num):
-			list.append(i)
+			inputs.append(i)
 # 	use 2 for random inputs
 	elif int(type) == 2:
 		pass
@@ -28,6 +22,8 @@ def input_gen(type, num):
 	elif int(type) == 3:
 		pass
 	return inputs
-		
 
+for i in range(num_data_points):
+	output_file.write(str(input_gen(1, dimensions)))
+	
 output_file.close()
