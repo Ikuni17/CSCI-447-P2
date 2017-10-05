@@ -12,13 +12,14 @@ class RBF:
     def __init__(self, num_inputs, num_basis_functions, num_output):
         pass
 
-    def train(training_data):
+    def train(self, training_data):
         pass
           
-    def hypothesis_of(testing_data):
+    def hypothesis_of(self, testing_data):
         pass
 
-    def calculate_error():
+    def calculate_error(self):
         pass
     
-    def output_results():
+    def output_results(self):
+        pass
