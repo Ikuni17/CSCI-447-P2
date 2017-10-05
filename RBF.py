@@ -9,14 +9,16 @@ class RBF:
     sigma = None
     converged = False
 
-    def __init__(num_inputs, num_basis_functions, num_output):
+    def __init__(self, num_inputs, num_basis_functions, num_output):
+        pass
 
     def train(training_data):
+        pass
           
     def hypothesis_of(testing_data):
+        pass
 
     def calculate_error():
+        pass
     
     def output_results():
-    
-
