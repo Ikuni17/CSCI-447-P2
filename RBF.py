@@ -13,7 +13,7 @@ class RBF:
 
     def train(training_data):
           
-    def predict(testing_data):
+    def hypothesis_of(testing_data):
 
     def calculate_error():
     
