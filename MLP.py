@@ -13,6 +13,8 @@ class MLP:
     def train(training_data):
           
     def hypothesis_of(testing_data):
+        result = None
+        return result
 
     def calculate_error():
     
