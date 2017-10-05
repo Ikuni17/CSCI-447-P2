@@ -1,3 +1,7 @@
+# data will be generated in the form
+# a,b,c,d:x
+# with a - d being inputs and each x being the associated output.
+
 import sys
 
 num_inputs = int(sys.argv[1])
