@@ -1,15 +1,12 @@
-# data will be generated in the form
-# a,b,c,d:x
-# with a - d being inputs and each x being the associated output.
-
 import sys
 import random
 
-num_inputs = int(sys.argv[1])
+dimensions = int(sys.argv[1])
 num_data_points = int(sys.argv[2])
 output_file_address = str(sys.argv[3])
 output_file = open(output_file_address, 'a')
 
+# takes a list of inputs and returns the rosenbrock function output on those inputs
 def rosen(inputs):
 	totals = []
 	for i in range(len(inputs)):
@@ -18,22 +15,32 @@ def rosen(inputs):
 			totals.append(temp)
 	result = sum(totals)
 	print(str(result))
+	return 
 
+# generates inputs for rosenbrock function
+# 0 - random numbers
+# 1 - sequential numbers
+# 2 - grid numbers??? NEED TO LOOK THIS UP/ASK BIG SHEP
 def input_gen(type, dimensions, num_data_points):
-	inputs = []
-	next_input = []
+	generated = []
 	if type == 0:
 		for i in range(num_data_points):
-			next_input = []
+			temp = []
 			for j in range(dimensions):
-				next_input.append(random.random() * num_data_points)
-# 			print(str(i) + ': ' + str(next_input) + '\n')
+				temp.append(random.random() * num_data_points)
+			generated.append(temp)
 	elif type == 1:
-		pass
+		counter = 0
+		for i in range(num_data_points):
+			temp = []
+			for j in range(dimensions):
+				temp.append(counter)
+				counter += 1
+			generated.append(temp)
 	elif type == 2:
 		pass
-	output_file.write(str(inputs))
+	output_file.write(str(generated))
+	return generated
 
-output_file.write(str(rosen([0,1,8])))
-# output_file.write(str(input_gen(0, 2, num_data_points)))
+input_gen(1, dimensions, num_data_points)
 output_file.close()
