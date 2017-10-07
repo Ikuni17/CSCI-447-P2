@@ -1,21 +1,31 @@
+# generates input vectors and 
+# calculates the rosenbrock function 
+# on each one.
+
+# input parameters
+# 0,1,2		random,sequential,grid input vectors
+# 2,3,4,5,6	dimension of the input vectors
+# integer		number of data points
+# string		output file
+
 import sys
 import random
 
-dimensions = int(sys.argv[1])
-num_data_points = int(sys.argv[2])
-output_file_address = str(sys.argv[3])
+input_type = int(sys.argv[1])
+dimensions = int(sys.argv[2])
+num_data_points = int(sys.argv[3])
+output_file_address = str(sys.argv[4])
 output_file = open(output_file_address, 'a')
+MAX_RANDOM_SIZE = num_data_points
 
 # takes a list of inputs and returns the rosenbrock function output on those inputs
 def rosen(inputs):
 	totals = []
-	for i in range(len(inputs)):
-		if i < (len(inputs)-1):
-			temp = (((1 - inputs[i])**2) + (100 * (inputs[i+1] - inputs[i]**2)**2))
-			totals.append(temp)
+	for i in range(len(inputs)-1):
+		temp = (((1 - inputs[i])**2) + (100 * (inputs[i+1] - inputs[i]**2)**2))
+		totals.append(temp)
 	result = sum(totals)
-	print(str(result))
-	return 
+	return result
 
 # generates inputs for rosenbrock function
 # 0 - random numbers
@@ -27,10 +37,10 @@ def input_gen(type, dimensions, num_data_points):
 		for i in range(num_data_points):
 			temp = []
 			for j in range(dimensions):
-				temp.append(random.random() * num_data_points)
+				temp.append(random.random() * float(MAX_RANDOM_SIZE))
 			generated.append(temp)
 	elif type == 1:
-		counter = 0
+		counter = 1
 		for i in range(num_data_points):
 			temp = []
 			for j in range(dimensions):
@@ -39,8 +49,14 @@ def input_gen(type, dimensions, num_data_points):
 			generated.append(temp)
 	elif type == 2:
 		pass
-	output_file.write(str(generated))
 	return generated
 
-input_gen(1, dimensions, num_data_points)
+# appends the result of the rosenbrock function to each input and records the result in output_file
+def apply_rosen(inputs):
+	for i in inputs:
+		dimension = len(i)
+		i.append(rosen(i))
+		output_file.write(str(i) + '\n')
+
+apply_rosen(input_gen(input_type, dimensions, num_data_points))
 output_file.close()
