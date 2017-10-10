@@ -4,18 +4,25 @@ import rosen_generator
 
 def main():
     mode = int(input('Type anything to run the default test: '))
-    num_inputs = int(input('Number of inputs: '))
+    num_inputs = int(input('Number of inputs(dimensionality): '))
     num_basis_functions = int(input('Number of basis functions: '))
-    nodes_per_layer = int(input('Number if nodes per layer: '))
-    num_outputs = 1
-    rbf_nn = RBF(num_inputs, num_basis_functions, num_outputs) 
-    mlp_nn = MLP(num_inputs, nodes_per_layer, num_outputs, momentum)
-    
-    rosen_in = rosen_generator(num_inputs)
-    rbf_nn.train(rosen_in)
-    mlp_nn.train(rosen_in)
+    nodes_per_layer = int(input('Number of nodes per layer: '))
+    num_data_points = int(input('Number of data points: '))
+    input_type = 0
+    # rbf_nn = RBF(num_inputs, num_basis_functions, num_outputs)
+    # mlp_nn = MLP(num_inputs, nodes_per_layer, num_outputs, momentum)
 
-    rosen_test = rosen_generator(num_inputs)
+    rosen_in = rosen_generator.generate(input_type, num_inputs, num_data_points)
+    print(str(rosen_in))
 
-    results_rbf = rbf_nn.hypothesis_of(rosen_tests)
-    results_mlp = rbf_nn.hypothesis_of(rosen_tests)
+    # rbf_nn.train(rosen_in)
+    # mlp_nn.train(rosen_in)
+
+    rosen_test = rosen_generator.generate(input_type, num_inputs, num_data_points)
+    print('testing:\n' + str(rosen_test) + '\n')
+
+    # results_rbf = rbf_nn.hypothesis_of(rosen_tests)
+    # results_mlp = mlp_nn.hypothesis_of(rosen_tests)
+
+if __name__=='__main__':
+    main()
