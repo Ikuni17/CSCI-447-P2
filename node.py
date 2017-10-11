@@ -3,11 +3,12 @@ CSCI 447: Project 2
 October 5, 2017
 '''
 
-class Node():
+class node():
     number = 0
     use_linear_act = True
 
-    def __init__(self, number, use_linear):
+    def __init__(self, number, use_linear, center):
+        self.center = center
         self.number = number
         self.use_linear_act = use_linear
 
@@ -31,7 +32,7 @@ class Node():
 def node_test():
     network = []
     for i in range(10):
-        network.append(Node(i, True))
+        network.append(node(i, True))
 
     for i in len(network):
         for j in range(i+1, len(network)):
