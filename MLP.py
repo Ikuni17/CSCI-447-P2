@@ -1,5 +1,6 @@
 import node
 import random
+import numpy as np
 
 class MLP:
     # List of input node objects
@@ -14,7 +15,7 @@ class MLP:
     # historical weights for that connection, where the 0th index is the current weight.
     weights = [[[]]]
 
-    def __init__(self, num_inputs, num_layers, nodes_per_layer, num_outputs, momentum):
+    def __init__(self, num_inputs, num_layers, nodes_per_layer, num_outputs, momentum, training_data):
         node_id_counter = 0
 
         # Initialize input layer
