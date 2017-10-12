@@ -15,6 +15,7 @@ class node():
         self.center = center
         self.number = number
         self.use_linear_act = use_linear
+        self.value = 0
 
     def activation_function(self, input_num):
         c = 2
