@@ -5,6 +5,7 @@ October 5, 2017
 
 import math
 
+
 class node():
     number = 0
     use_linear_act = True
@@ -24,10 +25,8 @@ class node():
             return math.tanh(input_num)
 
     def gaussian_function(self, input_num):
-        #return math.e **
+        # return math.e **
         pass
-
-
 
 
 def node_test():
