@@ -11,7 +11,7 @@
 import sys
 import random
 
-MAX_RANDOM_SIZE = 100
+MAX_RANDOM_SIZE = 1
 
 if __name__ == "__main__":
     input_type = int(sys.argv[1])
