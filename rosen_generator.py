@@ -11,20 +11,6 @@
 import sys
 import random
 
-MAX_RANDOM_SIZE = 100
-
-if __name__ == "__main__":
-	input_type = int(sys.argv[1])
-	dimensions = int(sys.argv[2])
-	num_data_points = int(sys.argv[3])
-	output_file_address = str(sys.argv[4])
-	output_file = open(output_file_address, 'a')
-	MAX_RANDOM_SIZE = num_data_points
-
-	generate(input_type, dimensions, num_data_points)
-
-	output_file.close()
-
 # takes a list of inputs and returns the rosenbrock function output on those inputs
 def rosen(inputs):
 	totals = []
@@ -44,7 +30,7 @@ def input_gen(type, dimensions, num_data_points):
 		for i in range(num_data_points):
 			temp = []
 			for j in range(dimensions):
-				temp.append(random.random() * float(MAX_RANDOM_SIZE))
+				temp.append((random.random() * 2) - 1)
 			generated.append(temp)
 	elif type == 1:
 		counter = 1
@@ -75,3 +61,14 @@ def apply_rosen(inputs):
 # string		output file
 def generate(input_type, dimensions, num_data_points):
 	return apply_rosen(input_gen(input_type, dimensions, num_data_points))
+
+if __name__ == "__main__":
+	input_type = int(sys.argv[1])
+	dimensions = int(sys.argv[2])
+	num_data_points = int(sys.argv[3])
+	output_file_address = str(sys.argv[4])
+	output_file = open(output_file_address, 'a')
+
+	generate(input_type, dimensions, num_data_points)
+
+	output_file.close()
