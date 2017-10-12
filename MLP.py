@@ -7,6 +7,7 @@ class MLP:
     output_layer = []
     momentum = None
     converged = False
+    weights = [[[]]]
 
     def __init__(self, num_inputs, num_layers, nodes_per_layer, num_outputs, momentum):
         node_id_counter = 0
@@ -27,8 +28,15 @@ class MLP:
             node_id_counter += 1
 
     def train(self, training_data):
+        # Train the first layer from the input layer
+
+        # Train any hidden layers based on previous layer
+
         pass
           
+    def backprop(self):
+        pass
+
     def hypothesis_of(self, testing_data):
         pass
 
@@ -54,7 +62,7 @@ class MLP:
             print("{0}".format(self.output_layer[i].number), end=', ')
 
 def main():
-    mlp_network = MLP(2, 2, [4, 4], 2, 0)
+    mlp_network = MLP(2, 2, [4, 6], 1, 0)
     mlp_network.print_network()
 
 main()
