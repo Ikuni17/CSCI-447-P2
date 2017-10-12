@@ -21,7 +21,7 @@ def main():
     # mlp_nn.train(rosen_in)
 
     rosen_test = rosen_generator.generate(input_type, num_inputs, num_data_points)
-    print('testing:\n' + str(rosen_test) + '\n')
+    #print('testing:\n' + str(rosen_test) + '\n')
 
     # results_rbf = rbf_nn.hypothesis_of(rosen_tests)
     # results_mlp = mlp_nn.hypothesis_of(rosen_tests)
