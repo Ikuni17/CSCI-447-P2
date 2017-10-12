@@ -13,12 +13,13 @@ import random
 
 # takes a list of inputs and returns the rosenbrock function output on those inputs
 def rosen(inputs):
-	totals = []
-	for i in range(len(inputs)-1):
-		temp = (((1 - inputs[i])**2) + (100 * (inputs[i+1] - inputs[i]**2)**2))
-		totals.append(temp)
-	result = sum(totals)
-	return result
+    totals = []
+    for i in range(len(inputs) - 1):
+        temp = (((1 - inputs[i]) ** 2) + (100 * (inputs[i + 1] - inputs[i] ** 2) ** 2))
+        totals.append(temp)
+    result = sum(totals)
+    return result
+
 
 # generates inputs for rosenbrock function
 # 0 - random numbers
@@ -46,12 +47,13 @@ def input_gen(type, dimensions, num_data_points):
 
 # appends the result of the rosenbrock function to each input and records the result in output_file
 def apply_rosen(inputs):
-	for i in inputs:
-		dimension = len(i)
-		i.append(rosen(i))
-		if __name__ == '__main__':
-			output_file.write(str(i) + '\n')
-	return inputs
+    for i in inputs:
+        dimension = len(i)
+        i.append(rosen(i))
+        if __name__ == '__main__':
+            output_file.write(str(i) + '\n')
+    return inputs
+
 
 # generates a data set based on the provided parameters
 # input parameters
