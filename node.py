@@ -26,11 +26,9 @@ class node():
             return math.tanh(input_num)
 
     def gaussian_function(self, input_vect):
-        sigma = 0.1
+        sigma = 0.3
         dist = np.linalg.norm(np.array(input_vect[:len(input_vect)-1]) - np.array(self.center[:len(self.center)-1]))
-        return math.exp((dist**2)/2*sigma**2)
-        
-        
+        return math.exp(-(dist**2)/2*sigma**2)
 
 
 def node_test():
