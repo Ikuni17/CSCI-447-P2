@@ -1,6 +1,8 @@
 import node
 import random
 import numpy as np
+import rosen_generator
+
 
 class MLP:
     # List of input node objects
@@ -15,14 +17,19 @@ class MLP:
     # historical weights for that connection, where the 0th index is the current weight.
     weights = [[[]]]
 
-    def __init__(self, num_inputs, num_layers, nodes_per_layer, num_outputs, momentum, training_data):
+    def __init__(self, num_inputs, num_layers, nodes_per_layer, num_outputs, momentum, input_vectors, outputs):
         node_id_counter = 0
+        self.input_vectors = input_vectors
+        self.outputs = outputs
 
         # Initialize input layer
         for i in range(num_inputs):
             self.input_layer.append(node.node(node_id_counter, True, 0))
-            self.weights
+            self.input_layer[i].value = input_vectors[i]
             node_id_counter += 1
+
+        '''for i in range(len(self.input_layer)):
+            print(self.input_layer[i].value)'''
 
         # Initialize any hidden layers
         for i in range(num_layers):
@@ -33,8 +40,10 @@ class MLP:
                 node_id_counter += 1
 
         # Initialize output layer
+        output_vector = outputs[:num_inputs]
         for i in range(num_outputs):
             self.output_layer.append(node.node(node_id_counter, True, 0))
+            self.output_layer[i].value = output_vector
             node_id_counter += 1
 
         # Initialize all weights to zero
@@ -47,13 +56,16 @@ class MLP:
                 else:
                     self.weights[i][j][0] = random.random()
 
-    def train(self, training_data):
+    def train(self):
         # Train the first layer from the input layer
+        for hidden_node in self.hidden_layers[0]:
+            for input_node in self.input_layer:
+                hidden_node.value = np.dot(input_node.value, self.weights[hidden_node.number][input_node.number][0])
+                print(hidden_node.value)
 
-        # Train any hidden layers based on previous layer
-
+    def sum_weights(self):
         pass
-          
+
     def backprop(self):
         pass
 
@@ -62,7 +74,7 @@ class MLP:
 
     def calculate_error(self):
         pass
-    
+
     def output_results(self):
         pass
 
@@ -81,8 +93,23 @@ class MLP:
         for i in range(len(self.output_layer)):
             print("{0}".format(self.output_layer[i].number), end=', ')
 
+
 def main():
-    mlp_network = MLP(5, 2, [5, 5], 1, 0)
-    mlp_network.print_network()
+    rosen_in = rosen_generator.generate(input_type=0, dimensions=2, num_data_points=1000)
+
+    input_vectors = []
+    outputs = []
+    dimension = len(rosen_in[0]) - 1
+    for i in range(len(rosen_in)):
+        input_vectors.append(rosen_in[i][:dimension])
+        outputs.append(rosen_in[i][dimension])
+
+    # print(rosen_in)
+    # print(input_vectors)
+    # print(outputs)
+    mlp_network = MLP(5, 1, [5, 5], 1, 0, input_vectors, outputs)
+    mlp_network.train()
+
+
 
 main()
