@@ -3,7 +3,7 @@ CSCI 447: Project 2
 October 5, 2017
 '''
 
-import math
+import numpy as np
 
 
 class node():
@@ -14,7 +14,8 @@ class node():
         self.center = center
         self.number = number
         self.use_linear_act = use_linear
-        self.value = 0
+        self.value = []
+        self.output = []
 
     def activation_function(self, input_num):
         c = 2
@@ -23,7 +24,7 @@ class node():
             return c * input_num
         else:
             # Tanh Activation Function
-            return math.tanh(input_num)
+            return np.tanh(input_num)
 
     def gaussian_function(self, input_num):
         # return math.e **

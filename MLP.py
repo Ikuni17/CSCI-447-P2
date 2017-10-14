@@ -36,7 +36,7 @@ class MLP:
             if i != 0:
                 self.hidden_layers.append([])
             for j in range(nodes_per_layer[i]):
-                self.hidden_layers[i].append(node.node(node_id_counter, True, 0))
+                self.hidden_layers[i].append(node.node(node_id_counter, False, 0))
                 node_id_counter += 1
 
         # Initialize output layer
@@ -60,8 +60,11 @@ class MLP:
         # Train the first layer from the input layer
         for hidden_node in self.hidden_layers[0]:
             for input_node in self.input_layer:
-                hidden_node.value = np.dot(input_node.value, self.weights[hidden_node.number][input_node.number][0])
-                print(hidden_node.value)
+                hidden_node.value.append(np.dot(input_node.value, self.weights[hidden_node.number][input_node.number][0]))
+            for vector in hidden_node.value:
+                hidden_node.output.append(hidden_node.activation_function(vector))
+
+        print(self.hidden_layers[0][0].output)
 
     def sum_weights(self):
         pass
@@ -109,7 +112,6 @@ def main():
     # print(outputs)
     mlp_network = MLP(5, 1, [5, 5], 1, 0, input_vectors, outputs)
     mlp_network.train()
-
 
 
 main()
