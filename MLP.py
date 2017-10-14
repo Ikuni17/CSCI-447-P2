@@ -15,6 +15,8 @@ class MLP:
     # Matrix of weights where the connect between nodes i and j will be at index [i][j]. The third list contains
     # historical weights for that connection, where the 0th index is the current weight.
     weights = [[[]]]
+    # Vector of MSE with the newest value in the 0th index
+    historical_error = []
 
     def __init__(self, num_inputs, num_layers, nodes_per_layer, num_outputs, input_vectors, outputs):
         # Keep track of the total amount of nodes to construct the weight matrix
@@ -69,24 +71,41 @@ class MLP:
             for vector in hidden_node.value:
                 hidden_node.output.append(hidden_node.activation_function(vector))
 
-        # Calculate the MSE
+
+        # Call helper
         self.calc_mse()
 
+    # Calculates the weighted inputs from the last hidden layer and then calculate the Means Squared Error for this
+    # iteration.
     def calc_mse(self):
+        # Amount of datapoints we are using
         n = len(self.output_layer[0].value)
-        temp_sum = [0 for i in range(n)]
+        # Insert a new error value at the head of the list
+        self.historical_error.insert(0, 0)
 
+        # Iterate through all nodes in the last hidden layer
         for hidden_node in self.hidden_layers[0]:
             for i in range(len(hidden_node.output)):
                 final_value = np.dot(hidden_node.output[i],
+                                     self.weights[hidden_node.number][self.output_layer[0].number][0])[0]
+                final_value = self.output_layer[0].activation_function(final_value)
+                self.historical_error[0] += (final_value - self.output_layer[0].value[i]) ** 2
+
+        self.historical_error[0] = (1 / n) * self.historical_error[0]
+
+        print(self.historical_error[0])
+
+        done = False
+        # Iterate through all nodes in the last hidden layer
+        for hidden_node in self.hidden_layers[0]:
+            final_value = np.dot(hidden_node.output,
                                      self.weights[hidden_node.number][self.output_layer[0].number][0])
-                temp_sum[i] += (final_value - self.output_layer[0].value[i]) ** 2
+            final_value = self.output_layer[0].activation_function(final_value)
 
-        total_sum = 0
-        for i in range(n):
-            total_sum += temp_sum[i][0]
+        print(final_value[4][0])
+        print(final_value[0][0])
 
-        print((1/n) * total_sum)
+        #self.historical_error[0] += (final_value - self.output_layer[0].value[i]) ** 2
 
     def backprop(self):
         pass
@@ -126,7 +145,7 @@ def main():
     # print(rosen_in)
     # print(input_vectors)
     # print(outputs)
-    mlp_network = MLP(1000, 1, [5, 5], 1, input_vectors, outputs)
+    mlp_network = MLP(5, 1, [5, 5], 1, input_vectors, outputs)
     mlp_network.train()
 
 
