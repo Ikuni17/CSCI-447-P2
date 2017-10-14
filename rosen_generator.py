@@ -26,7 +26,6 @@ def rosen(inputs):
 # generates inputs for rosenbrock function
 # 0 - random numbers
 # 1 - sequential numbers
-# 2 - grid numbers??? NEED TO LOOK THIS UP/ASK BIG SHEP
 def input_gen(type, dimensions, num_data_points):
 	generated = []
 	if type == 0:
@@ -46,20 +45,6 @@ def input_gen(type, dimensions, num_data_points):
 				temp.append(counter)
 				counter += step
 			generated.append(temp)
-	# elif type == 2:
-		# # grid numbers
-		# grid = []
-		# vals = []
-		# step = (2 / num_data_points)
-		# counter = (-1.0 + (step/2))
-		# # creates a list of values that is num_data_points long
-		# for i in range(int(math.sqrt(num_data_points))):
-		# 	vals.append(counter)
-		# 	counter += step
-		#
-		# random.shuffle(vals)
-		# generated = list(itertools.combinations(vals, dimensions))
-		# generated = generated[:num_data_points]
 
 	return generated
 
