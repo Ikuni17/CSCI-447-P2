@@ -1,77 +1,79 @@
-import node
-import copy
 import random
+import math
 import numpy as np
-
+from matplotlib import pyplot as plt
 
 class RBF:
-    input_layer = []
-    clusters = []
-    output_layer = []
-    num_vectors = []
-    sigma = None
-    converged = False
-    training_data = None
-    output = []
-    hidden_layer = []
+	sigma = 0.1
+	def __init__(self, num_basis, train_in):
+		self.train_in = []
+		self.train_out = []
+		self.weights = []
+		self.centers = []
+		self.sigmas = []
+		#print(train_in)
+		for x in train_in:
+			self.train_in.append(x[:len(x)-1])
+			self.train_out.append(x[len(x)-1])
 
-    def __init__(self, num_inputs, num_basis_functions, num_output, training_data):
-        self.training_data = copy.copy(training_data)
-        # Initialize k-centers using number of basis functions by randomly picking points from the data set.
-        for i in range(0, num_basis_functions):
-            index = random.randint(0, len(training_data))
-            self.hidden_layer.append(node.node(2, True, self.training_data[index]))
-            self.clusters.append([0] * (num_inputs + 1))
+		# initialize weight and centers array with random values
+		for i in range(num_basis):
+			# Put random point from training data as center
+			self.centers.append(self.train_in[random.randint(0, len(self.train_in) - 1)])
+			self.weights.append(random.uniform(0,100))
+			self.sigmas.append(random.uniform(0, 0.3))
 
-    def train(self):
-        # train the inputs
-        variability = .01
-        converged = False
-        while not converged:
-            converged = True
-            # initialize clusters
-            for i in range(0, len(self.training_data)):
-                temp_index = None
-                temp_min = None
-                for j in range(len(self.hidden_layer) - 1):
-                    # to not include outputs in distance calculation
-                    # if temp_min == None or np.linalg.norm(training_data[i][:len(training_data[i]) -1] - hidden_layer[j][:len(hidden_layer[j]) - 1]
-                    if temp_min is None or np.linalg.norm(np.array(self.training_data[i]) - np.array(self.hidden_layer[j].center)) < temp_min:
-                        temp_min = np.linalg.norm(np.array(self.training_data[i]) - np.array(self.hidden_layer[j].center))
-                        temp_index = j
-                self.clusters[temp_index].append(i)
+	def train(self):
+		out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.001, 100000)
+		self.weights = out[0]
+		plt.plot(out[1])
+		plt.ylabel('cost')
+		plt.axis([0, max(out[1]), 0, len(out[1])]) 
+		plt.show()
+		#print(self.weights)
+		output = self.hypothesis(self.train_in)
+		#for i in range(len(output)):
+			#print('Expected out: {0}, Actual out: {1}'.format(self.train_out[i], output[i]))
 
-            # Calculates new centers
-            average = [0] * len(self.clusters[0])
-            for i in range(len(self.clusters) - 1):
-                for item in average:
-                    item = 0
+	
+	def hypothesis(self, data_in):
+		output = []
+		for datapoint in data_in:
+			value = 0
+			for i in range(len(self.weights)):
+				value += self.weights[i]*RBF.gaussian_function(datapoint, self.centers[i], RBF.sigma)
+			output.append(value)
+		return output
 
-                # For every index in cluster
-                for j in range(len(self.clusters[i])):
-                    average = [x + y for x, y in zip(average, self.training_data[self.clusters[i][j]])]
+	@staticmethod
+	def gaussian_function(datapoint, center, sigma):
+		dist = np.linalg.norm(np.array(datapoint) - np.array(center))
+		return math.exp(-(dist**2)/2*sigma**2)
 
-                average = [x / len(self.clusters[i]) for x in average]
-                for j in range(len(self.hidden_layer[i].center)-1):
-                    if average[j] > (self.hidden_layer[i].center[j]) + variability or average[j] < (self.hidden_layer[i].center[j]) - variability:
-                        #print('Average: {0}   Center: {1}'.format(average[j], self.hidden_layer[i].center[j]))
-                        converged = False
-                        self.hidden_layer[i].center = average
+	@staticmethod
+	def get_outputs(data_in, weights, centers):
+		output = []
+		for datapoint in data_in:
+			value = []
+			for i in range(len(weights)):
+				value.append(RBF.gaussian_function(datapoint, centers[i], RBF.sigma))
+			output.append(value)
+		return output
 
-        # train weights to output
-        test = self.hypothesis_of(self.training_data)
-
-    def hypothesis_of(self, testing_data):
-        for item in testing_data:
-            value = 0
-            for node in self.hidden_layer:
-                value += node.gaussian_function(item)
-            print('Calculated value: {0}   Actual Value: {1}'.format(value, item[len(item)-1]))
-
-            
-
-    def calculate_error(self):
-        pass
-
-    def output_results(self):
-        pass
+	@staticmethod
+	def gradient_descent(inputs, output, weights, alpha, num_iter):
+		y = np.array(output)
+		theta = np.array(weights)
+		x = np.array(inputs)
+		#print(theta)
+		x_trans = x.transpose()
+		costs = []
+		for i in range(num_iter):
+			hypothesis = np.dot(x, theta)
+			# print(hypothesis[2])
+			loss = hypothesis - y
+			cost = np.sum(loss ** 2)
+			costs.append(cost)
+			gradient = np.dot(x_trans,loss)/(np.shape(loss))
+			theta = theta - alpha*gradient
+		return (theta.tolist(), costs)
