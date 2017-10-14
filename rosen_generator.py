@@ -3,7 +3,7 @@
 # on each one.
 
 # input parameters
-# 0,1,2		random,sequential,grid input vectors
+# 0,1,	2		random,sequential,	grid input vectors
 # 2,3,4,5,6	dimension of the input vectors
 # integer		number of data points
 # string		output file
@@ -46,21 +46,20 @@ def input_gen(type, dimensions, num_data_points):
 				temp.append(counter)
 				counter += step
 			generated.append(temp)
-	elif type == 2:
-		# grid numbers
-		# NOT YET FUNCTIONAL
-		grid = []
-		vals = []
-		step = (2 / (dimensions * num_data_points))
-		counter = (-1.0 + (step/2))
-		# creates a list of values that is num_data_points long
-		for i in range(num_data_points):
-			counter += step
-			vals.append(counter)
-
-		possible = itertools.combinations(random.shuffle(vals), dimensions)
-		for i in range(num_data_points):
-			print(str(list(possible)))
+	# elif type == 2:
+		# # grid numbers
+		# grid = []
+		# vals = []
+		# step = (2 / num_data_points)
+		# counter = (-1.0 + (step/2))
+		# # creates a list of values that is num_data_points long
+		# for i in range(int(math.sqrt(num_data_points))):
+		# 	vals.append(counter)
+		# 	counter += step
+		#
+		# random.shuffle(vals)
+		# generated = list(itertools.combinations(vals, dimensions))
+		# generated = generated[:num_data_points]
 
 	return generated
 
@@ -81,6 +80,7 @@ def apply_rosen(inputs):
 # integer		number of data points
 # string		output file
 def generate(input_type, dimensions, num_data_points):
+	num_data_points = ((50 * dimensions) ** 2)
 	return apply_rosen(input_gen(input_type, dimensions, num_data_points))
 
 if __name__ == "__main__":
