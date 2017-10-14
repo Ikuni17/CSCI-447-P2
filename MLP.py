@@ -92,6 +92,16 @@ class MLP:
                 # Call helper
                 # self.calc_mse()
 
+    def forward_prop(self):
+        for i in range(len(self.hidden_layers)):
+            for hidden_node in self.hidden_layers[i]:
+                temp_vector = []
+                for input_node in self.input_layer:
+                    temp_vector.append(input_node.value)
+                hidden_node
+
+
+
     # Calculates the weighted inputs from the last hidden layer and then calculate the Means Squared Error for this
     # iteration.
     def calc_mse(self):
@@ -136,17 +146,17 @@ class MLP:
     def print_network(self):
         print("Inputs: ", end="")
         for i in range(len(self.input_layer)):
-            print("{0}".format(self.input_layer[i].weights), end=', ')
+            print("{0}".format(self.input_layer[i].value), end=', ')
 
         print("\n\nHidden Layers: ")
         for i in range(len(self.hidden_layers)):
             print("\nLayer {0}: ".format(i), end="")
             for j in range(len(self.hidden_layers[i])):
-                print("{0}".format(self.hidden_layers[i][j].weights), end=', ')
+                print("{0}".format(self.hidden_layers[i][j].value), end=', ')
 
         print("\n\nOutputs: ", end="")
         for i in range(len(self.output_layer)):
-            print("{0}".format(self.output_layer[i].weights), end=', ')
+            print("{0}".format(self.output_layer[i].value), end=', ')
 
 
 def main():
