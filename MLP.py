@@ -14,50 +14,67 @@ class MLP:
     converged = False
     # Matrix of weights where the connect between nodes i and j will be at index [i][j]. The third list contains
     # historical weights for that connection, where the 0th index is the current weight.
-    weights = [[[]]]
+    #weights = [[]]
+    #historical_weights = [[]]
     # Vector of MSE with the newest value in the 0th index
     historical_error = []
+    current_input = 0
 
-    def __init__(self, num_inputs, num_layers, nodes_per_layer, num_outputs, input_vectors, outputs):
+    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, input_vectors, outputs):
         # Keep track of the total amount of nodes to construct the weight matrix
         node_id_counter = 0
         self.input_vectors = input_vectors
         self.outputs = outputs
+        self.problem_dimension = len(self.input_vectors[0])
 
         # Initialize input layer
         for i in range(num_inputs):
-            self.input_layer.append(node.node(node_id_counter, True, 0))
-            # Add an input vector to the node
-            self.input_layer[i].value = input_vectors[i]
+            self.input_layer.append(node.node(node_id_counter, True))
             node_id_counter += 1
 
         # Initialize any hidden layers
-        for i in range(num_layers):
+        for i in range(num_hidden_layers):
             if i != 0:
                 # Add a new list to represent a layer
                 self.hidden_layers.append([])
             # Add the amount of nodes specified for this layer
             for j in range(nodes_per_layer[i]):
-                self.hidden_layers[i].append(node.node(node_id_counter, False, 0))
+                self.hidden_layers[i].append(node.node(node_id_counter, False))
+                self.hidden_layers[i][j].initialize_weights(self.problem_dimension)
+                if num_inputs > self.problem_dimension:
+                    self.hidden_layers[i][j].append_zero_weights(num_inputs - self.problem_dimension)
                 node_id_counter += 1
 
         # Initialize output layer
-        output_vector = outputs[:num_inputs]
+        #output_vector = outputs[:self.problem_dimension]
         for i in range(num_outputs):
-            self.output_layer.append(node.node(node_id_counter, True, 0))
-            # Add the output vector
-            self.output_layer[i].value = output_vector
+            self.output_layer.append(node.node(node_id_counter, True))
+            # TODO Generalize outputs
+            self.output_layer[i].initialize_weights(len(self.hidden_layers[0]))
             node_id_counter += 1
 
+        self.update_input()
+
         # Initialize all weights to zero
-        self.weights = [[[0] for i in range(node_id_counter)] for j in range(node_id_counter)]
+        '''self.weights = [[0 for i in range(node_id_counter)] for j in range(node_id_counter)]
         # Add a random weight between 0 and 1 if it isn't the connection to itself
         for i in range(node_id_counter):
             for j in range(node_id_counter):
                 if i == j:
                     continue
                 else:
-                    self.weights[i][j][0] = random.random()
+                    self.weights[i][j] = random.random()
+
+        print(self.weights)'''
+
+    def update_input(self):
+        for i in range(len(self.input_vectors[self.current_input])):
+            self.input_layer[i].value = self.input_vectors[self.current_input][i]
+
+        # TODO Generalize to multiple output nodes
+        # for i in range(len(self.outputs[self.current_input])):
+        self.output_layer[0].value = self.outputs[self.current_input]
+        self.current_input += 1
 
     # Function to forward propagate through the network then determine if backprop is needed again
     def train(self):
@@ -72,8 +89,8 @@ class MLP:
                 hidden_node.output.append(hidden_node.activation_function(vector))
 
 
-        # Call helper
-        self.calc_mse()
+                # Call helper
+                # self.calc_mse()
 
     # Calculates the weighted inputs from the last hidden layer and then calculate the Means Squared Error for this
     # iteration.
@@ -99,13 +116,13 @@ class MLP:
         # Iterate through all nodes in the last hidden layer
         for hidden_node in self.hidden_layers[0]:
             final_value = np.dot(hidden_node.output,
-                                     self.weights[hidden_node.number][self.output_layer[0].number][0])
+                                 self.weights[hidden_node.number][self.output_layer[0].number][0])
             final_value = self.output_layer[0].activation_function(final_value)
 
         print(final_value[4][0])
         print(final_value[0][0])
 
-        #self.historical_error[0] += (final_value - self.output_layer[0].value[i]) ** 2
+        # self.historical_error[0] += (final_value - self.output_layer[0].value[i]) ** 2
 
     def backprop(self):
         pass
@@ -119,17 +136,17 @@ class MLP:
     def print_network(self):
         print("Inputs: ", end="")
         for i in range(len(self.input_layer)):
-            print("{0}".format(self.input_layer[i].number), end=', ')
+            print("{0}".format(self.input_layer[i].weights), end=', ')
 
         print("\n\nHidden Layers: ")
         for i in range(len(self.hidden_layers)):
             print("\nLayer {0}: ".format(i), end="")
             for j in range(len(self.hidden_layers[i])):
-                print("{0}".format(self.hidden_layers[i][j].number), end=', ')
+                print("{0}".format(self.hidden_layers[i][j].weights), end=', ')
 
         print("\n\nOutputs: ", end="")
         for i in range(len(self.output_layer)):
-            print("{0}".format(self.output_layer[i].number), end=', ')
+            print("{0}".format(self.output_layer[i].weights), end=', ')
 
 
 def main():
@@ -145,8 +162,9 @@ def main():
     # print(rosen_in)
     # print(input_vectors)
     # print(outputs)
-    mlp_network = MLP(5, 1, [5, 5], 1, input_vectors, outputs)
-    mlp_network.train()
+    mlp_network = MLP(2, 1, [5, 5], 1, input_vectors, outputs)
+    #mlp_network.train()
+    mlp_network.print_network()
 
 
 main()
