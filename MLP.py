@@ -60,22 +60,33 @@ class MLP:
         # Train the first layer from the input layer
         for hidden_node in self.hidden_layers[0]:
             for input_node in self.input_layer:
-                hidden_node.value.append(np.dot(input_node.value, self.weights[hidden_node.number][input_node.number][0]))
+                hidden_node.value.append(
+                    np.dot(input_node.value, self.weights[hidden_node.number][input_node.number][0]))
             for vector in hidden_node.value:
                 hidden_node.output.append(hidden_node.activation_function(vector))
 
-        print(self.hidden_layers[0][0].output)
+        #print(self.hidden_layers[0][0].output)
+        self.calc_mse()
 
-    def sum_weights(self):
-        pass
+    def calc_mse(self):
+        n = len(self.output_layer[0].value)
+        temp_sum = [0 for i in range(n)]
+
+        for hidden_node in self.hidden_layers[0]:
+            for i in range(len(hidden_node.output)):
+                final_value = np.dot(hidden_node.output[i],
+                                     self.weights[hidden_node.number][self.output_layer[0].number][0])
+                temp_sum[i] += (final_value - self.output_layer[0].value[i]) ** 2
+
+        for i in range(n):
+            temp_sum[i] = (1/n) * temp_sum[i][0]
+
+        print(temp_sum)
 
     def backprop(self):
         pass
 
     def hypothesis_of(self, testing_data):
-        pass
-
-    def calculate_error(self):
         pass
 
     def output_results(self):
