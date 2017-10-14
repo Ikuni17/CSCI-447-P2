@@ -3,18 +3,21 @@ CSCI 447: Project 2
 October 5, 2017
 '''
 
-import math
 import numpy as np
+import random
 
 
 class node():
     number = 0
     use_linear_act = True
 
-    def __init__(self, number, use_linear, center):
-        self.center = center
+    def __init__(self, number, use_linear):
         self.number = number
         self.use_linear_act = use_linear
+        self.value = 0
+        self.output = 0
+        self.weights = []
+        self.historical_weights = []
 
     def activation_function(self, input_num):
         c = 2
@@ -23,12 +26,19 @@ class node():
             return c * input_num
         else:
             # Tanh Activation Function
-            return math.tanh(input_num)
+            return np.tanh(input_num)
 
-    def gaussian_function(self, input_vect):
-        sigma = 0.3
-        dist = np.linalg.norm(np.array(input_vect[:len(input_vect)-1]) - np.array(self.center[:len(self.center)-1]))
-        return math.exp(-(dist**2)/2*sigma**2)
+    def gaussian_function(self, input_num):
+        # return math.e **
+        pass
+
+    def initialize_weights(self, size):
+        for i in range(size):
+            self.weights.append(random.random())
+
+    def append_zero_weights(self, number):
+        for i in range(number):
+            self.weights.append(0)
 
 
 def node_test():
