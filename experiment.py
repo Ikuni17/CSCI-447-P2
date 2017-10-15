@@ -25,7 +25,9 @@ class RBFThread(threading.Thread):
         # Test the same RBF network on a portion of the dataset
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} basis functions at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time())))
-        # rbf.hypothesis(self.testing_data)
+        result = rbf.hypothesis(self.testing_data)
+        print("Thread {0}: {1} result {5} with {2} dimensions and {3} basis functions at {4}".format(
+            self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time()), result))
 
 
 # Class to handle an MLP network in a thread, used for experimentation
@@ -49,7 +51,9 @@ class MLPThread(threading.Thread):
                       self.training_data)
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
-        mlp.hypothesis_of(self.testing_data)
+        result = mlp.hypothesis_of(self.testing_data)
+        print("Thread {0}: {1} result {5} with {2} dimensions and {3} hidden layers at {4}".format(
+            self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time()), result))
 
 
 def create_folds(data, num_folds):
@@ -101,7 +105,7 @@ def perform_experiment():
     thread_counter = 0
 
     for i in range(len(rosen_datasets)):
-        current_dim = len(rosen_datasets[i] - 1)
+        current_dim = len(rosen_datasets[i]) - 1
 
         mlp_threads.append(MLPThread(thread_counter, rosen_datasets[i], current_dim, 0, [0], 1))
         thread_counter += 1
