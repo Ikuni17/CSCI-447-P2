@@ -178,6 +178,7 @@ class MLP:
         n = len(self.input_vectors)
         self.update_input()
 
+        # Forward prop for each input then calculate the error for that input
         for i in range(n):
             self.forward_prop()
             self.calc_error()
