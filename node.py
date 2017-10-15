@@ -20,7 +20,7 @@ class node():
         self.historical_weights = []
 
     def activation_function(self, input_num):
-        c = 2
+        c = 1
         if self.use_linear_act is True:
             # Linear Activation Function
             return c * input_num
