@@ -164,8 +164,28 @@ class MLP:
         for i in range(len(self.output_layer)):
             self.error[i] += (self.output_layer[i].value - self.output_layer[i].output[0]) ** 2
 
-    def backprop(self):
-        pass
+    def backprop(self, err):
+        #err is total error on output layer (deltai )
+        counter = 0
+        for j in range(len(self.output_layer)):
+            counter = 0
+            for i in range(self.hidden_layers[len(self.hidden_layers)]):
+                counter +=self.hidden_layers[len(self.hidden_layers) - 1][i].value[j]
+
+            modifier = (self.learning_rate * counter * err)
+            self.output_layer.weights += modifier
+
+        for hidden_layer, j  in reversed(list(enumerate(self.hidden_layers))):
+            for i in range(len(hidden_layer)):
+                counter = 0
+                if j!= 0:
+                    for node in hidden_layers[j-1]:
+                        counter += node.value[i]
+                else:
+                    for node in self.input_layer:
+                        counter += node.value[i]
+                modifier = (self.learning_rate * counter * err)
+                self.output_layer.weights += modifier
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network

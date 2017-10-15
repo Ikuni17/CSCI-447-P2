@@ -1,8 +1,6 @@
 import random
 import math
 import numpy as np
-from matplotlib import pyplot as plt
-
 
 class RBF:
     sigma = 0.1
@@ -21,18 +19,13 @@ class RBF:
         # initialize weight and centers array with random values
         for i in range(num_basis):
             # Put random point from training data as center
-            self.centers.append(self.train_in[random.randint(0, len(self.train_in) - 1)])
+            self.centers.append(self.train_in[random.randint(0, len(self.train_in) - 1)][:len(self.train_in[0])-1])
             self.weights.append(random.uniform(0, 100))
             self.sigmas.append(random.uniform(0, 0.3))
 
     def train(self):
-        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out,
-                                    self.weights, 0.001, 500000)
+        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.001, 100)
         self.weights = out[0]
-        '''plt.plot(out[1])
-        plt.ylabel('cost')
-        plt.axis([0, max(out[1]), 0, len(out[1])])
-        plt.show()'''
         # print(self.weights)
         output = self.hypothesis(self.train_in)
 
