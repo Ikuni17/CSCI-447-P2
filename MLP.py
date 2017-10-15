@@ -3,10 +3,9 @@ import random
 import numpy as np
 import rosen_generator
 
-
 class MLP:
     def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, input_vectors,
-                 outputs, learning_rate=0.1, epoch=1):
+                 output_vectors, learning_rate=0.1, epoch=1):
 
         # Make sure we have nodes per layer defined for all hidden layers
         # Can probably be moved to experiment.py after receiving user input
@@ -27,10 +26,10 @@ class MLP:
         # Creates a unique ID for each node within the network during initialization, unused currently
         self.node_id_counter = 0
         # List of vectors which contain the inputs, the ith input vector will have its corresponding output
-        # at the ith index of self.outputs
+        # at the ith index of self.output_vectors
         self.input_vectors = input_vectors
-        # List of outputs of the function
-        self.outputs = outputs
+        # List of output_vectors of the function
+        self.output_vectors = output_vectors
         # The dimension of the function being approximated
         self.function_dimension = len(self.input_vectors[0])
         # The learning rate of the network, default value of 0.1
@@ -49,50 +48,47 @@ class MLP:
             self.hidden_layers.append([])
             # Add the amount of nodes specified for this layer
             for j in range(nodes_per_layer[i]):
+                self.hidden_layers[i].append(node.node(self.node_id_counter, False))
                 # If this is the first hidden layer, connect to the input layer
                 if i == 0:
-                    self.hidden_layers[i].append(node.node(self.node_id_counter, False))
                     # Create the edges connecting the input layer
                     self.hidden_layers[i][j].initialize_weights(self.function_dimension)
+                    # If we have extra input nodes with no value, set their weights to zero
                     if num_inputs > self.function_dimension:
                         self.hidden_layers[i][j].append_zero_weights(num_inputs - self.function_dimension)
                     self.node_id_counter += 1
                 # Otherwise connect to the previous hidden layer
                 else:
-                    self.hidden_layers[i].append(node.node(self.node_id_counter, False))
                     # Create the edges connecting the previous hidden layer
                     self.hidden_layers[i][j].initialize_weights(len(self.hidden_layers[i - 1]))
                     self.node_id_counter += 1
 
         # Initialize output layer
-        # output_vector = outputs[:self.function_dimension]
         for i in range(num_outputs):
             self.output_layer.append(node.node(self.node_id_counter, True))
-            # TODO Generalize outputs
-            self.output_layer[i].initialize_weights(len(self.hidden_layers[0]))
+            # Check if we have hidden layers
+            if len(self.hidden_layers) == 0:
+                # Create the edges connecting the input layer
+                self.output_layer[i].initialize_weights(self.function_dimension)
+                # If we have extra input nodes with no value, set their weights to zero
+                if num_inputs > self.function_dimension:
+                    self.output_layer[i].append_zero_weights(num_inputs - self.function_dimension)
+            # Otherwise connect to the last hidden layer
+            else:
+                self.output_layer[i].initialize_weights(nodes_per_layer[-1])
+
             self.node_id_counter += 1
 
         self.update_input()
 
-        # Initialize all weights to zero
-        '''self.weights = [[0 for i in range(node_id_counter)] for j in range(node_id_counter)]
-        # Add a random weight between 0 and 1 if it isn't the connection to itself
-        for i in range(node_id_counter):
-            for j in range(node_id_counter):
-                if i == j:
-                    continue
-                else:
-                    self.weights[i][j] = random.random()
-
-        print(self.weights)'''
-
+    # Initialize the inputs and output from the function
     def update_input(self):
         for i in range(len(self.input_vectors[self.current_input])):
             self.input_layer[i].value = self.input_vectors[self.current_input][i]
 
-        # TODO Generalize to multiple output nodes
-        # for i in range(len(self.outputs[self.current_input])):
-        self.output_layer[0].value = self.outputs[self.current_input]
+        for i in range(len(self.output_vectors[self.current_input])):
+            self.output_layer[i].value = self.output_vectors[self.current_input][i]
+
         self.current_input += 1
 
     # Function to forward propagate through the network then determine if backprop is needed again
@@ -126,7 +122,7 @@ class MLP:
                     hidden_node.output.insert(0,
                                               hidden_node.activation_function(np.dot(temp_vector, hidden_node.weights)))
                 else:
-                    # Create a vector of the outputs from the previous hidden layer
+                    # Create a vector of the output_vectors from the previous hidden layer
                     temp_vector = []
                     for previous_node in self.hidden_layers[i - 1]:
                         temp_vector.append(previous_node.output[0])
@@ -179,23 +175,23 @@ class MLP:
 
         print("\n\nOutputs: ", end="")
         for i in range(len(self.output_layer)):
-            print("{0}".format(self.output_layer[i].weights), end=', ')
+            print("{0}".format(self.output_layer[i].value), end=', ')
 
 
 def main():
     rosen_in = rosen_generator.generate(input_type=0, dimensions=2)
 
     input_vectors = []
-    outputs = []
+    output_vectors = []
     dimension = len(rosen_in[0]) - 1
     for i in range(len(rosen_in)):
         input_vectors.append(rosen_in[i][:dimension])
-        outputs.append(rosen_in[i][dimension])
+        output_vectors.append([rosen_in[i][dimension]])
 
     # print(rosen_in)
     # print(input_vectors)
-    # print(outputs)
-    mlp_network = MLP(2, 2, [5, 6], 1, input_vectors, outputs)
+    # print(output_vectors)
+    mlp_network = MLP(2, 1, [5], 1, input_vectors, output_vectors)
     mlp_network.train()
     mlp_network.print_network()
 

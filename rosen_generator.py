@@ -5,7 +5,7 @@
 # input parameters
 # 0,1,	2		random,sequential,	grid input vectors
 # 2,3,4,5,6	dimension of the input vectors
-# integer		number of data points
+# integer		id of data points
 # string		output file
 
 import sys
@@ -64,7 +64,7 @@ def apply_rosen(inputs):
 # input parameters
 # 0,1,2		random,sequential,grid input vectors
 # 2,3,4,5,6	dimension of the input vectors
-# integer		number of data points
+# integer		id of data points
 # string		output file
 def generate(input_type, dimensions):
     num_data_points = 10 #((50 * dimensions) ** 2)
