@@ -24,7 +24,7 @@ class RBF:
             self.sigmas.append(random.uniform(0, 0.3))
 
     def train(self):
-        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.001, 100)
+        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.001, 100000)
         self.weights = out[0]
         # print(self.weights)
         output = self.hypothesis(self.train_in)
@@ -61,12 +61,10 @@ class RBF:
         y = np.array(output)
         theta = np.array(weights)
         x = np.array(inputs)
-        # print(theta)
         x_trans = x.transpose()
         costs = []
         for i in range(num_iter):
             hypothesis = np.dot(x, theta)
-            # print(hypothesis[2])
             loss = hypothesis - y
             cost = np.sum(loss ** 2)
             costs.append(cost)
