@@ -187,11 +187,6 @@ class MLP:
                 modifier = (self.learning_rate * counter * err)
                 self.output_layer.weights += modifier
 
-
-
-
-
-
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network
         self.input_vectors = []
