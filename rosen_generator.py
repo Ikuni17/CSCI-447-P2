@@ -67,7 +67,7 @@ def apply_rosen(inputs):
 # integer		id of data points
 # string		output file
 def generate(input_type, dimensions):
-    num_data_points = 10 #((50 * dimensions) ** 2)
+    num_data_points = 20 #((50 * dimensions) ** 2)
     return apply_rosen(input_gen(input_type, dimensions, num_data_points))
 
 

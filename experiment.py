@@ -13,13 +13,15 @@ def create_folds(data, num_folds):
     return folded_data
 
 
-def fold_training(data, num_folds, network):
+def fold_training(network, data):
+    num_folds = len(data)
     for i in range(num_folds):
         current_data_set = []
         for j in data:
             if j != i:
                 current_data_set.append(data[i])
-        network.train(current_data_set)
+        print('\n' + str(current_data_set) + '\n')
+        # network.train(current_data_set)
 
 def main():
     mode = input('Type anything to run the default test: ')
@@ -47,6 +49,5 @@ def main():
 
 if __name__ == '__main__':
     # main()
-    testing_data = rosen_generator.generate(1, 2)
-    folded_data = create_folds(testing_data, 10)
-    print(str(folded_data))
+    test = create_folds(rosen_generator.generate(1, 2), 3)
+    fold_training(5, test)
