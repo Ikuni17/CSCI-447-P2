@@ -29,10 +29,10 @@ class RBF:
         out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out,
                                     self.weights, 0.001, 100000)
         self.weights = out[0]
-        plt.plot(out[1])
+        '''plt.plot(out[1])
         plt.ylabel('cost')
         plt.axis([0, max(out[1]), 0, len(out[1])])
-        plt.show()
+        plt.show()'''
         # print(self.weights)
         output = self.hypothesis(self.train_in)
 
