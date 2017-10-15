@@ -223,4 +223,4 @@ def main():
     print(mlp_network.hypothesis_of(rosen_test))
 
 
-main()
+#main()

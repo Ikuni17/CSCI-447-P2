@@ -1,5 +1,5 @@
-# import RBF
-# import MLP
+import RBF
+import MLP
 import rosen_generator
 
 
@@ -23,18 +23,45 @@ def fold_training(network, data):
         print('\n' + str(current_data_set) + '\n')
         # network.train(current_data_set)
 
+
 def main():
-    mode = input('Type anything to run the default test: ')
-    num_inputs = 2  # int(input('Number of inputs(dimensionality): '))
-    num_basis_functions = 40  # int(input('Number of basis functions: '))
-    nodes_per_layer = 8  # int(input('Number of nodes per layer: '))
-    num_data_points = 1000  # int(input('Number of data points: '))
-    num_outputs = 1
+    valid_response = False
+    while not valid_response:
+        mode = input("Use default inputs? (y/n) > ")
+
+        if mode == "y":
+            valid_response = True
+            num_inputs = 2
+            num_basis_functions = 40
+            num_data_points = 1000
+            num_hidden_layers = 1
+            num_hidden_nodes = 5
+            num_outputs = 1
+            print("Using the following parameters:\n"
+                  "Dimension of Rosenbrock and number of input nodes (MLP): {0}\n"
+                  "Number of data points: {1}\n"
+                  "Number of basis functions (RBF): {2}\n"
+                  "Number of hidden layers (MLP): {3}\n"
+                  "Number of hidden nodes per layer (MLP): {4}\n"
+                  "Number of output nodes (MLP): {5}\n".format(
+                num_inputs, num_data_points, num_basis_functions, num_hidden_layers, num_hidden_nodes, num_outputs))
+
+        elif mode == "n":
+            valid_response = True
+            print("No")
+
+        else:
+            print("Please enter a valid response")
+
+            # int(input('Number of inputs(dimensionality): '))
+            # int(input('Number of basis functions: '))
+            #  int(input('Number of nodes per layer: '))
+            # int(input('Number of data points: '))
     input_type = 0
     # rbf_nn = RBF(num_inputs, num_basis_functions, num_outputs)
     # mlp_nn = MLP(num_inputs, nodes_per_layer, num_outputs, momentum)
 
-    rosen_in = rosen_generator.generate(input_type, num_inputs, num_data_points)
+    rosen_in = rosen_generator.generate(input_type, num_inputs)
     rbf_nn = RBF.RBF(num_basis_functions, rosen_in)
 
     rbf_nn.train()
@@ -48,6 +75,6 @@ def main():
 
 
 if __name__ == '__main__':
-    # main()
-    test = create_folds(rosen_generator.generate(1, 2), 3)
-    fold_training(5, test)
+    main()
+    #test = create_folds(rosen_generator.generate(1, 2), 3)
+    #fold_training(5, test)
