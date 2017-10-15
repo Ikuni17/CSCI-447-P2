@@ -1,7 +1,20 @@
-import RBF
-import MLP
+# import RBF
+# import MLP
 import rosen_generator
 
+def create_folds(data, num_folds):
+    data_length = len(data)
+    fold_length = int(data_length / num_folds)
+   folded_data = []
+    for i in range(num_folds):
+       folded_data.append(data[:fold_length])
+        data = data[fold_length:]
+    return folded_data
+
+def fold_training(data, folds):
+    for i in range(folds):
+        current_data_set = []
+        
 
 def main():
     mode = input('Type anything to run the default test: ')
@@ -20,7 +33,7 @@ def main():
     rbf_nn.train()
     # mlp_nn.train(rosen_in)
 
-    rosen_test = rosen_generator.generate(input_type, num_inputs, num_data_points)
+    rosen_test = rosen_generator.generate(input_type, num_data_points)
     #print('testing:\n' + str(rosen_test) + '\n')
 
     # results_rbf = rbf_nn.hypothesis_of(rosen_tests)
@@ -28,4 +41,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    testing_data = rosen_generator.generate(1, 2)
+    folded_data = create_folds(testing_data, 10)
+    print(str(folded_data))

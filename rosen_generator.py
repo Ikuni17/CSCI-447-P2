@@ -66,18 +66,17 @@ def apply_rosen(inputs):
 # 2,3,4,5,6	dimension of the input vectors
 # integer		number of data points
 # string		output file
-def generate(input_type, dimensions, num_data_points):
-    num_data_points = ((50 * dimensions) ** 2)
+def generate(input_type, dimensions):
+    num_data_points = 10 #((50 * dimensions) ** 2)
     return apply_rosen(input_gen(input_type, dimensions, num_data_points))
 
 
 if __name__ == "__main__":
     input_type = int(sys.argv[1])
     dimensions = int(sys.argv[2])
-    num_data_points = int(sys.argv[3])
-    output_file_address = str(sys.argv[4])
+    output_file_address = str(sys.argv[3])
     output_file = open(output_file_address, 'w')
 
-    generate(input_type, dimensions, num_data_points)
+    generate(input_type, dimensions)
 
     output_file.close()
