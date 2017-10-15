@@ -1,7 +1,10 @@
 import RBF
 import MLP
 import rosen_generator
+import threading
 
+class RBFThread(threading.Thread):
+    def __init__(self):pass
 
 def create_folds(data, num_folds):
     data_length = len(data)
@@ -23,6 +26,25 @@ def fold_training(network, data):
         print('\n' + str(current_data_set) + '\n')
         # network.train(current_data_set)
 
+def perform_experiment():
+    rosen_datasets = []
+    for i in range(2, 7):
+        rosen_datasets.append(rosen_generator.generate(0, i))
+
+    '''print(len(rosen_datasets))
+
+    for i in range(len(rosen_datasets)):
+        print(len(rosen_datasets[i]))'''
+
+    training_data = rosen_datasets[0][:int(len(rosen_datasets[0]) * 0.8)]
+    testing_data = rosen_datasets[0][int(len(rosen_datasets[0]) * 0.8):]
+
+    rbf2 = RBF.RBF(3, rosen_datasets[0][:int(len(rosen_datasets[0]) * 0.8)])
+    print("Training RBF with 2 dimensions and 3 basis functions")
+    rbf2.train()
+    print("Testing RBF with 2 dimensions and 3 basis functions")
+    print(rbf2.hypothesis(rosen_datasets[0][int(len(rosen_datasets[0]) * 0.8):]))
+    #thing = input("Waiting")
 
 def main():
     valid_response1 = False
@@ -32,6 +54,7 @@ def main():
         if mode1 == "e":
             valid_response1 = True
             print("Starting experiment")
+            perform_experiment()
 
         elif mode1 == "n":
             valid_response1 = True
@@ -82,10 +105,10 @@ def main():
     # rbf_nn = RBF(num_inputs, num_basis_functions, num_outputs)
     # mlp_nn = MLP(num_inputs, nodes_per_layer, num_outputs, momentum)
 
-    rosen_in = rosen_generator.generate(input_type, rosen_dim)
-    rbf_nn = RBF.RBF(num_basis_functions, rosen_in)
+    #rosen_in = rosen_generator.generate(input_type, rosen_dim)
+    #rbf_nn = RBF.RBF(num_basis_functions, rosen_in)
 
-    rbf_nn.train()
+    #rbf_nn.train()
     # mlp_nn.train(rosen_in)
 
     # rosen_test = rosen_generator.generate(input_type, num_data_points)
