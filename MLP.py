@@ -169,23 +169,23 @@ class MLP:
         counter = 0
         for j in range(len(self.output_layer)):
             counter = 0
-            for i in range(self.hidden_layers[len(self.hidden_layers)]):
-                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].value[j]
+            for i in range(len(self.hidden_layers[len(self.hidden_layers)-1])):
+                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].value
 
-            modifier = (self.learning_rate * counter * err)
-            self.output_layer.weights += modifier
+            modifier = (self.learning_rate * counter * np.array(err))
+            self.output_layer[j].weights += modifier
 
-        for hidden_layer, j in reversed(list(enumerate(self.hidden_layers))):
+        for j, hidden_layer in reversed(list(enumerate(self.hidden_layers))):
             for i in range(len(hidden_layer)):
                 counter = 0
                 if j != 0:
                     for node in self.hidden_layers[j - 1]:
-                        counter += node.value[i]
+                        counter += node.value
                 else:
                     for node in self.input_layer:
-                        counter += node.value[i]
-                modifier = (self.learning_rate * counter * err)
-                self.output_layer.weights += modifier
+                        counter += node.value
+                modifier = (self.learning_rate * counter * np.array(err))
+                hidden_layer[i].weights += modifier
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network
