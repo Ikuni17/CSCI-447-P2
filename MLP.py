@@ -5,8 +5,8 @@ import rosen_generator
 
 
 class MLP:
-    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, input_vectors,
-                 output_vectors, learning_rate=0.1, epoch=1):
+    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.1,
+                 epoch=1):
 
         # Make sure we have nodes per layer defined for all hidden layers
         # Can probably be moved to experiment.py after receiving user input
@@ -28,9 +28,11 @@ class MLP:
         self.node_id_counter = 0
         # List of vectors which contain the inputs, the ith input vector will have its corresponding output
         # at the ith index of self.output_vectors
-        self.input_vectors = input_vectors
+        self.input_vectors = []
         # List of output vectors of the function
-        self.output_vectors = output_vectors
+        self.output_vectors = []
+        # Call helper to split the data into input and output vectors
+        self.process_data(training_data)
         # The dimension of the function being approximated
         self.function_dimension = len(self.input_vectors[0])
         # The dimension of the output of the function being approximated
@@ -115,7 +117,7 @@ class MLP:
             # Reset parameters before next iteration
             self.current_input = 0
             self.update_input()
-            #print(self.error)
+            # print(self.error)
             self.error = [0] * len(self.output_layer)
             # print(self.error/len(self.input_vectors))
 
@@ -166,7 +168,32 @@ class MLP:
         pass
 
     def hypothesis_of(self, testing_data):
-        pass
+        # Reset parameters before testing the network
+        self.input_vectors = []
+        self.output_vectors = []
+        self.current_input = 0
+        self.error = [0] * len(self.output_layer)
+        # Process the testing data in the vectors
+        self.process_data(testing_data)
+        n = len(self.input_vectors)
+        self.update_input()
+
+        # Forward prop for each input then calculate the error for that input
+        for i in range(n):
+            self.forward_prop()
+            self.calc_error()
+            if i != n - 1:
+                self.update_input()
+
+        # Return the MSE for the testing data
+        return np.dot((1/n), self.error)
+
+    # Split the data into input and output vectors
+    def process_data(self, dataset):
+        dimension = len(dataset[0]) - 1
+        for i in range(len(dataset)):
+            self.input_vectors.append(dataset[i][:dimension])
+            self.output_vectors.append([dataset[i][dimension]])
 
     def output_results(self):
         pass
@@ -189,21 +216,11 @@ class MLP:
 
 def main():
     rosen_in = rosen_generator.generate(input_type=0, dimensions=2)
-
-    input_vectors = []
-    output_vectors = []
-    dimension = len(rosen_in[0]) - 1
-    for i in range(len(rosen_in)):
-        input_vectors.append(rosen_in[i][:dimension])
-        output_vectors.append([rosen_in[i][dimension]])
-
-    # print(rosen_in)
-    # print(input_vectors)
-    # print(output_vectors)
-    mlp_network = MLP(num_inputs=2, num_hidden_layers=1, nodes_per_layer=[5, 5], num_outputs=1,
-                      input_vectors=input_vectors, output_vectors=output_vectors)
+    mlp_network = MLP(num_inputs=2, num_hidden_layers=1, nodes_per_layer=[5, 5], num_outputs=1, training_data=rosen_in)
     mlp_network.train()
     mlp_network.print_network()
+    rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
+    print(mlp_network.hypothesis_of(rosen_test))
 
 
 main()
