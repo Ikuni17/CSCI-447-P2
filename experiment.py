@@ -13,10 +13,13 @@ def create_folds(data, num_folds):
     return folded_data
 
 
-def fold_training(data, folds):
-    for i in range(folds):
+def fold_training(data, num_folds, network):
+    for i in range(num_folds):
         current_data_set = []
-
+        for j in data:
+            if j != i:
+                current_data_set.append(data[i])
+        network.train(current_data_set)
 
 def main():
     mode = input('Type anything to run the default test: ')
