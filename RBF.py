@@ -26,7 +26,7 @@ class RBF:
 
     def train(self):
         out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out,
-                                    self.weights, 0.001, 50000)
+                                    self.weights, 0.001, 500000)
         self.weights = out[0]
         # print(self.weights)
         output = self.hypothesis(self.train_in)

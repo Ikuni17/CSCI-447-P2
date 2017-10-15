@@ -179,7 +179,7 @@ class MLP:
             for i in range(len(hidden_layer)):
                 counter = 0
                 if j!= 0:
-                    for node in hidden_layers[j-1]:
+                    for node in self.hidden_layers[j-1]:
                         counter += node.value[i]
                 else:
                     for node in self.input_layer:
