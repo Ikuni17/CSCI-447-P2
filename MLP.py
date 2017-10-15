@@ -113,7 +113,7 @@ class MLP:
                 self.calc_error()
                 if j != len(self.input_vectors) - 1:
                     self.update_input()
-            # self.backprop()
+            self.backprop(self.error[0])
             # Reset parameters before next iteration
             self.current_input = 0
             self.update_input()
@@ -239,7 +239,7 @@ def main():
     mlp_network = MLP(num_inputs=2, num_hidden_layers=1, nodes_per_layer=[5, 5], num_outputs=1, training_data=rosen_in)
     mlp_network.train()
     mlp_network.print_network()
-    rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
-    print(mlp_network.hypothesis_of(rosen_test))
+    #rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
+    #print(mlp_network.hypothesis_of(rosen_test))
 
-# main()
+main()

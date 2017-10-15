@@ -103,13 +103,13 @@ def perform_experiment():
         rbf_threads.append(RBFThread(thread_counter, rosen_datasets[i], 7))
         thread_counter += 1
 
-    print("Overall RBF starting time: {0}".format(time.ctime(time.time())))
+    print("Overall and RBF starting time: {0}".format(time.ctime(time.time())))
     for i in range(len(rbf_threads)):
         rbf_threads[i].start()
 
     for i in range(len(rbf_threads)):
         rbf_threads[i].join()
-    print("Overall RBF ending time: {0}".format(time.ctime(time.time())))
+    print("RBF ending time: {0}".format(time.ctime(time.time())))
 
     mlp_threads = []
     thread_counter = 0
@@ -122,13 +122,13 @@ def perform_experiment():
         mlp_threads.append(MLPThread(thread_counter, rosen_datasets[i], 2))
         thread_counter += 1
 
-    print("Overall MLP starting time: {0}".format(time.ctime(time.time())))
+    print("MLP starting time: {0}".format(time.ctime(time.time())))
     for i in range(len(mlp_threads)):
         mlp_threads[i].start()
 
     for i in range(len(mlp_threads)):
         mlp_threads[i].join()
-    print("Overall MLP ending time: {0}".format(time.ctime(time.time())))
+    print("Overall and MLP ending time: {0}".format(time.ctime(time.time())))
 
 
 def main():
