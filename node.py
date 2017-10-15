@@ -15,7 +15,7 @@ class node():
         self.number = number
         self.use_linear_act = use_linear
         self.value = 0
-        self.output = 0
+        self.output = []
         self.weights = []
         self.historical_weights = []
 

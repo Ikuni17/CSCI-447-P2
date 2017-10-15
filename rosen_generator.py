@@ -34,7 +34,7 @@ def input_gen(type, dimensions, num_data_points):
         for i in range(num_data_points):
             temp = []
             for j in range(dimensions):
-                temp.append((random.random() * 2) - 1)
+                temp.append(random.uniform(-1.0, 1.0))
             generated.append(temp)
     elif type == 1:
         # sequential numbers
