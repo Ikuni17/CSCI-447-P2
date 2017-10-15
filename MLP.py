@@ -188,25 +188,6 @@ class MLP:
                 self.output_layer.weights += modifier
 
 
-gan is saying that it never took him more than like 3 mins w
-    def gradient_descent(inputs, output, weights, alpha, num_iter):
-        y = np.array(output)
-        theta = np.array(weights)
-        x = np.array(inputs)
-        # print(theta)
-        x_trans = x.transpose()
-        costs = []
-        for i in range(num_iter):
-            hypothesis = np.dot(x, theta)
-            # print(hypothesis[2])
-            loss = hypothesis - y
-            cost = np.sum(loss ** 2)
-            costs.append(cost)
-            gradient = np.dot(x_trans, loss) / (np.shape(loss))
-            theta = theta - alpha * gradient
-        return (theta.tolist(), costs)
-
-        for i in range(len(self.output)):
 
 
 
