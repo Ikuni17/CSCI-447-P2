@@ -163,13 +163,12 @@ class MLP:
             self.error[i] += (self.output_layer[i].value - self.output_layer[i].output[0]) ** 2
 
     def backprop(self, err):
-        #err is total error on output layer (deltai )
+        # err is total error on output layer (deltai )
         counter = 0
         for j in range(len(self.output_layer)):
             counter = 0
             for i in range(len(self.hidden_layers[len(self.hidden_layers)-1])):
                 counter += self.hidden_layers[len(self.hidden_layers)-1][i].value
-
             modifier = (self.learning_rate * counter * np.array(err))
             self.output_layer[j].weights += modifier
 
@@ -204,7 +203,7 @@ class MLP:
                 self.update_input()
 
         # Return the MSE for the testing data
-        return np.dot((1/n), self.error)
+        return np.dot((1 / n), self.error)
 
     # Split the data into input and output vectors
     def process_data(self, dataset):
@@ -237,7 +236,7 @@ def main():
     mlp_network = MLP(num_inputs=2, num_hidden_layers=1, nodes_per_layer=[5, 5], num_outputs=1, training_data=rosen_in)
     mlp_network.train()
     mlp_network.print_network()
-    rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
-    print(mlp_network.hypothesis_of(rosen_test))
+    #rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
+    #print(mlp_network.hypothesis_of(rosen_test))
 
 main()
