@@ -4,7 +4,8 @@ import numpy as np
 import rosen_generator
 
 
-class MLP:
+class MLP: 
+    learing_rate = 0.005
     # List of input node objects
     input_layer = []
     # List of lists which contain nodes for a hidden layer
@@ -135,7 +136,16 @@ class MLP:
         # self.historical_error[0] += (final_value - self.output_layer[0].value[i]) ** 2
 
     def backprop(self):
-        pass
+        for out in output_layer:
+            inputs = []
+            old_weights = out.weights
+            for node in self.hidden_layers[len(self.hidden_layers)-1]:                                          
+                inputs.append(node.output)
+                out.weights = RBF.gradient_descent(inputs, output, out.weights, learning_weight, 100000)
+        #for i in range(self.hidden_layers):
+            
+            
+        
 
     def hypothesis_of(self, testing_data):
         pass
