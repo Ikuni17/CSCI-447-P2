@@ -165,26 +165,30 @@ class MLP:
             self.error[i] += (self.output_layer[i].value - self.output_layer[i].output[0]) ** 2
 
     def backprop(self, err):
-        inputs = []
-        # get outputs from last hidden layers
-        for node in (self.hidden_layers[len(hidden_layers)-1]:
-            inputs.append(node.output[i])
-        for i in range(len(self.output_layers)):
-            self.output_layers[i].weights = weights = gradient_descent(inputs, self.output_vectors, self.output_layers[i].weights, 0.05, 1000)
+        #err is total error on output layer (deltai )
+        counter = 0
+        for j in range(len(self.output_layer)):
+            counter = 0
+            for i in range(self.hidden_layers[len(self.hidden_layers)]):
+                counter +=self.hidden_layers[len(self.hidden_layers) - 1][i].value[j]
 
-        for e in reversed(list(self.hidden_layers)):
-            print(e) # make sure this starts above 0 and goes down
-            inputs = []
-            outputs = []
-            if e == len(self.hidden_layers) - 1:
-                outputs = self.output_vectors*
+            modifier = (self.learning_rate * counter * err)
+            self.output_layer.weights += modifier
 
-            for node in (self.hidden_layers(i-1):
-                inputs.append(node.output[i])
-            self.output_layers[e].weights = gradient_descent(inputs, ,)
+        for hidden_layer, j  in reversed(list(enumerate(self.hidden_layers))):
+            for i in range(len(hidden_layer)):
+                counter = 0
+                if j!= 0:
+                    for node in hidden_layers[j-1]:
+                        counter += node.value[i]
+                else:
+                    for node in self.input_layer:
+                        counter += node.value[i]
+                modifier = (self.learning_rate * counter * err)
+                self.output_layer.weights += modifier
 
 
-d
+gan is saying that it never took him more than like 3 mins w
     def gradient_descent(inputs, output, weights, alpha, num_iter):
         y = np.array(output)
         theta = np.array(weights)
@@ -204,23 +208,7 @@ d
 
         for i in range(len(self.output)):
 
-    @staticmethod
-    def gradient_descent(inputs, output, weights, alpha, num_iter, rr):
-        y = np.array(output)
-        theta = np.array(weights)
-        x = np.array(inputs)
-        # print(theta)
-        x_trans = x.transpose()
-        costs = []
-        for i in range(num_iter):
-            hypothesis = np.dot(x, theta)
-            # print(hypothesis[2])
-            loss = hypothesis - y
-            cost = np.sum(loss ** 2)
-            costs.append(cost)
-            gradient = np.dot(x_trans, loss) / (np.shape(loss))
-            theta = theta - alpha * gradient
-        return (theta.tolist(), costs)
+
 
 
     def hypothesis_of(self, testing_data):
