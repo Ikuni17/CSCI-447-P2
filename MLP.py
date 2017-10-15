@@ -3,6 +3,7 @@ import random
 import numpy as np
 import rosen_generator
 
+
 class MLP:
     def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, input_vectors,
                  output_vectors, learning_rate=0.1, epoch=1):
@@ -19,8 +20,8 @@ class MLP:
         self.output_layer = []
         # Boolean to determine if the training has converged
         self.converged = False
-        # Summation of the error during batch processing
-        self.error = 0
+        # Summation of the error during batch processing for each output node
+        self.error = [0] * num_outputs
         # Keeps track of the current input vector
         self.current_input = 0
         # Creates a unique ID for each node within the network during initialization, unused currently
@@ -28,10 +29,12 @@ class MLP:
         # List of vectors which contain the inputs, the ith input vector will have its corresponding output
         # at the ith index of self.output_vectors
         self.input_vectors = input_vectors
-        # List of output_vectors of the function
+        # List of output vectors of the function
         self.output_vectors = output_vectors
         # The dimension of the function being approximated
         self.function_dimension = len(self.input_vectors[0])
+        # The dimension of the output of the function being approximated
+        self.output_dimension = len(self.output_vectors[0])
         # The learning rate of the network, default value of 0.1
         self.learning_rate = learning_rate
         # Number of iterations to train the network, default value of 10000
@@ -56,26 +59,32 @@ class MLP:
                     # If we have extra input nodes with no value, set their weights to zero
                     if num_inputs > self.function_dimension:
                         self.hidden_layers[i][j].append_zero_weights(num_inputs - self.function_dimension)
-                    self.node_id_counter += 1
                 # Otherwise connect to the previous hidden layer
                 else:
                     # Create the edges connecting the previous hidden layer
                     self.hidden_layers[i][j].initialize_weights(len(self.hidden_layers[i - 1]))
-                    self.node_id_counter += 1
+
+                self.node_id_counter += 1
 
         # Initialize output layer
         for i in range(num_outputs):
             self.output_layer.append(node.node(self.node_id_counter, True))
-            # Check if we have hidden layers
-            if len(self.hidden_layers) == 0:
-                # Create the edges connecting the input layer
-                self.output_layer[i].initialize_weights(self.function_dimension)
-                # If we have extra input nodes with no value, set their weights to zero
-                if num_inputs > self.function_dimension:
-                    self.output_layer[i].append_zero_weights(num_inputs - self.function_dimension)
-            # Otherwise connect to the last hidden layer
+            if i < self.output_dimension:
+                # Check if we have hidden layers
+                if len(self.hidden_layers) == 0:
+                    # Create the edges connecting the input layer
+                    self.output_layer[i].initialize_weights(self.function_dimension)
+                    # If we have extra input nodes with no value, set their weights to zero
+                    if num_inputs > self.function_dimension:
+                        self.output_layer[i].append_zero_weights(num_inputs - self.function_dimension)
+                # Otherwise connect to the last hidden layer
+                else:
+                    self.output_layer[i].initialize_weights(nodes_per_layer[-1])
             else:
-                self.output_layer[i].initialize_weights(nodes_per_layer[-1])
+                if len(self.hidden_layers) == 0:
+                    self.output_layer[i].append_zero_weights(num_inputs)
+                else:
+                    self.output_layer[i].append_zero_weights(nodes_per_layer[-1])
 
             self.node_id_counter += 1
 
@@ -83,12 +92,15 @@ class MLP:
 
     # Initialize the inputs and output from the function
     def update_input(self):
-        for i in range(len(self.input_vectors[self.current_input])):
+        # Use a single input value per input node
+        for i in range(self.function_dimension):
             self.input_layer[i].value = self.input_vectors[self.current_input][i]
 
-        for i in range(len(self.output_vectors[self.current_input])):
+        # Use a single output value per output node
+        for i in range(self.output_dimension):
             self.output_layer[i].value = self.output_vectors[self.current_input][i]
 
+        # Move to the next vectors
         self.current_input += 1
 
     # Function to forward propagate through the network then determine if backprop is needed again
@@ -103,55 +115,52 @@ class MLP:
             # Reset parameters before next iteration
             self.current_input = 0
             self.update_input()
-            self.error = 0
+            #print(self.error)
+            self.error = [0] * len(self.output_layer)
             # print(self.error/len(self.input_vectors))
 
+    # Forward propagation through the network calculating weighted sums
     def forward_prop(self):
-        # Iterate through all hidden layers
+        # Iterate through all hidden layers, if any
         for i in range(len(self.hidden_layers)):
             # Iterate through all nodes within the hidden layer
             for hidden_node in self.hidden_layers[i]:
+                # Create a temporary vector to store the inputs from the previous layer
+                temp_vector = []
                 # Special case for the first hidden layer
                 if i == 0:
                     # Create a vector of the inputs from the input layer
-                    temp_vector = []
                     for input_node in self.input_layer:
                         temp_vector.append(input_node.value)
-                    # Do the dot product between the input vector and the weight vector, then input it into the
-                    # activation function
-                    hidden_node.output.insert(0,
-                                              hidden_node.activation_function(np.dot(temp_vector, hidden_node.weights)))
                 else:
                     # Create a vector of the output_vectors from the previous hidden layer
-                    temp_vector = []
                     for previous_node in self.hidden_layers[i - 1]:
                         temp_vector.append(previous_node.output[0])
-                    # Do the dot product between the input vector and the weight vector, then input it into the
-                    # activation function
-                    hidden_node.output.insert(0,
-                                              hidden_node.activation_function(np.dot(temp_vector, hidden_node.weights)))
 
-        # TODO Generalize to multiple output nodes
+                # Do the dot product between the input vector and the weight vector, then input it into the
+                # activation function. Then insert it into the 0th index of this nodes outputs.
+                hidden_node.output.insert(0,
+                                          hidden_node.activation_function(np.dot(temp_vector, hidden_node.weights)))
+
         # Handle the output layer
-        # Check if we have any hidden layers
-        if len(self.hidden_layers) == 0:
+        for i in range(len(self.output_layer)):
             temp_vector = []
-            for input_node in self.input_layer:
-                temp_vector.append(input_node.value)
-            self.output_layer[0].output.insert(0, self.output_layer[0].activation_function(
-                np.dot(temp_vector, self.output_layer[0].weights)))
-        # Otherwise calculate off the last hidden layer
-        else:
-            temp_vector = []
-            for hidden_node in self.hidden_layers[len(self.hidden_layers) - 1]:
-                temp_vector.append(hidden_node.output[0])
-            self.output_layer[0].output.insert(0, self.output_layer[0].activation_function(
-                np.dot(temp_vector, self.output_layer[0].weights)))
+            # Check if we have any hidden layers
+            if len(self.hidden_layers) == 0:
+                for input_node in self.input_layer:
+                    temp_vector.append(input_node.value)
+            # Otherwise calculate off the last hidden layer
+            else:
+                for hidden_node in self.hidden_layers[len(self.hidden_layers) - 1]:
+                    temp_vector.append(hidden_node.output[0])
+            self.output_layer[i].output.insert(0, self.output_layer[i].activation_function(
+                np.dot(temp_vector, self.output_layer[i].weights)))
 
     # Calculates the weighted inputs from the last hidden layer and then calculate the Means Squared Error for this
     # iteration.
     def calc_error(self):
-        self.error += (self.output_layer[0].value - self.output_layer[0].output[0]) ** 2
+        for i in range(len(self.output_layer)):
+            self.error[i] += (self.output_layer[i].value - self.output_layer[i].output[0]) ** 2
 
     def backprop(self):
         pass
@@ -175,7 +184,7 @@ class MLP:
 
         print("\n\nOutputs: ", end="")
         for i in range(len(self.output_layer)):
-            print("{0}".format(self.output_layer[i].value), end=', ')
+            print("{0}".format(self.output_layer[i].weights), end=', ')
 
 
 def main():
@@ -191,7 +200,8 @@ def main():
     # print(rosen_in)
     # print(input_vectors)
     # print(output_vectors)
-    mlp_network = MLP(2, 1, [5], 1, input_vectors, output_vectors)
+    mlp_network = MLP(num_inputs=2, num_hidden_layers=1, nodes_per_layer=[5, 5], num_outputs=1,
+                      input_vectors=input_vectors, output_vectors=output_vectors)
     mlp_network.train()
     mlp_network.print_network()
 
