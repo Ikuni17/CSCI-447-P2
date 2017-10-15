@@ -29,6 +29,7 @@ class RBF:
         self.weights = out[0]
         # print(self.weights)
         output = self.hypothesis(self.train_in)
+		return out[1]
 
         # for i in range(len(output)):
         # print('Expected out: {0}, Actual out: {1}'.format(self.train_out[i], output[i]))
