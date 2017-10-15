@@ -6,7 +6,7 @@ import rosen_generator
 
 class MLP:
     def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.1,
-                 epoch=1):
+                 epoch=1000):
 
         # Make sure we have nodes per layer defined for all hidden layers
         # Can probably be moved to experiment.py after receiving user input
@@ -242,4 +242,4 @@ def main():
     #rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
     #print(mlp_network.hypothesis_of(rosen_test))
 
-main()
+#main()
