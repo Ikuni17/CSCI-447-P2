@@ -141,7 +141,8 @@ class MLP:
 
                 # Do the dot product between the input vector and the weight vector, then input it into the
                 # activation function. Then insert it into the 0th index of this nodes outputs.
-                hidden_node.output.insert(0, hidden_node.activation_function(np.dot(temp_vector, hidden_node.weights)))
+                hidden_node.output.insert(0,
+                                          hidden_node.activation_function(np.dot(temp_vector, hidden_node.weights)))
 
         # Handle the output layer
         for i in range(len(self.output_layer)):
@@ -154,7 +155,8 @@ class MLP:
             else:
                 for hidden_node in self.hidden_layers[len(self.hidden_layers) - 1]:
                     temp_vector.append(hidden_node.output[0])
-            self.output_layer[i].output.insert(0, self.output_layer[i].activation_function(np.dot(temp_vector, self.output_layer[i].weights)))
+            self.output_layer[i].output.insert(0, self.output_layer[i].activation_function(
+                np.dot(temp_vector, self.output_layer[i].weights)))
 
     # Calculates the weighted inputs from the last hidden layer and then calculate the Means Squared Error for this
     # iteration.
@@ -167,22 +169,23 @@ class MLP:
         counter = 0
         for j in range(len(self.output_layer)):
             counter = 0
-            for i in range(len(self.hidden_layers[len(self.hidden_layers)-1])):
-                counter += self.hidden_layers[len(self.hidden_layers)-1][i].value
-            modifier = (self.learning_rate * counter * np.array(err))
-            self.output_layer[j].weights += modifier
+            for i in range(self.hidden_layers[len(self.hidden_layers)]):
+                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].value[j]
 
-        for j, hidden_layer  in reversed(list(enumerate(self.hidden_layers))):
+            modifier = (self.learning_rate * counter * err)
+            self.output_layer.weights += modifier
+
+        for hidden_layer, j in reversed(list(enumerate(self.hidden_layers))):
             for i in range(len(hidden_layer)):
                 counter = 0
-                if j!= 0:
-                    for node in self.hidden_layers[j-1]:
-                        counter += node.value
+                if j != 0:
+                    for node in self.hidden_layers[j - 1]:
+                        counter += node.value[i]
                 else:
                     for node in self.input_layer:
-                        counter += node.value
-                modifier = (self.learning_rate * counter * np.array(err))
-                hidden_layer[i].weights += modifier
+                        counter += node.value[i]
+                modifier = (self.learning_rate * counter * err)
+                self.output_layer.weights += modifier
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network
