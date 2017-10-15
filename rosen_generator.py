@@ -5,7 +5,7 @@
 # input parameters
 # 0,1,	2		random,sequential,	grid input vectors
 # 2,3,4,5,6	dimension of the input vectors
-# integer		number of data points
+# integer		id of data points
 # string		output file
 
 import sys
@@ -34,7 +34,7 @@ def input_gen(type, dimensions, num_data_points):
         for i in range(num_data_points):
             temp = []
             for j in range(dimensions):
-                temp.append((random.random() * 2) - 1)
+                temp.append(random.uniform(-1.0, 1.0))
             generated.append(temp)
     elif type == 1:
         # sequential numbers
@@ -64,20 +64,19 @@ def apply_rosen(inputs):
 # input parameters
 # 0,1,2		random,sequential,grid input vectors
 # 2,3,4,5,6	dimension of the input vectors
-# integer		number of data points
+# integer		id of data points
 # string		output file
-def generate(input_type, dimensions, num_data_points):
-    num_data_points = ((50 * dimensions) ** 2)
+def generate(input_type, dimensions):
+    num_data_points = (50 * dimensions) ** 2
     return apply_rosen(input_gen(input_type, dimensions, num_data_points))
 
 
 if __name__ == "__main__":
     input_type = int(sys.argv[1])
     dimensions = int(sys.argv[2])
-    num_data_points = int(sys.argv[3])
-    output_file_address = str(sys.argv[4])
+    output_file_address = str(sys.argv[3])
     output_file = open(output_file_address, 'w')
 
-    generate(input_type, dimensions, num_data_points)
+    generate(input_type, dimensions)
 
     output_file.close()

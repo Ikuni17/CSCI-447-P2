@@ -8,19 +8,19 @@ import random
 
 
 class node():
-    number = 0
+    id = 0
     use_linear_act = True
 
-    def __init__(self, number, use_linear):
-        self.number = number
+    def __init__(self, id, use_linear):
+        self.id = id
         self.use_linear_act = use_linear
         self.value = 0
-        self.output = 0
+        self.output = []
         self.weights = []
         self.historical_weights = []
 
     def activation_function(self, input_num):
-        c = 2
+        c = 1
         if self.use_linear_act is True:
             # Linear Activation Function
             return c * input_num
@@ -29,7 +29,6 @@ class node():
             return np.tanh(input_num)
 
     def gaussian_function(self, input_num):
-        # return math.e **
         pass
 
     def initialize_weights(self, size):

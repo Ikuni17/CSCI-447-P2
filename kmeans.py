@@ -19,7 +19,7 @@ class RBF:
 
     def __init__(self, num_inputs, num_basis_functions, num_output, training_data):
         self.training_data = copy.copy(training_data)
-        # Initialize k-centers using number of basis functions by randomly picking points from the data set.
+        # Initialize k-centers using id of basis functions by randomly picking points from the data set.
         for i in range(0, num_basis_functions):
             index = random.randint(0, len(training_data)-1)
             self.hidden_layer.append(node.node(2, True, self.training_data[index]))
