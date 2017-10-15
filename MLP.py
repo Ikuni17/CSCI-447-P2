@@ -164,8 +164,64 @@ class MLP:
         for i in range(len(self.output_layer)):
             self.error[i] += (self.output_layer[i].value - self.output_layer[i].output[0]) ** 2
 
-    def backprop(self):
-        pass
+    def backprop(self, err):
+        inputs = []
+        # get outputs from last hidden layers
+        for node in (self.hidden_layers[len(hidden_layers)-1]:
+            inputs.append(node.output[i])
+        for i in range(len(self.output_layers)):
+            self.output_layers[i].weights = weights = gradient_descent(inputs, self.output_vectors, self.output_layers[i].weights, 0.05, 1000)
+
+        for e in reversed(list(self.hidden_layers)):
+            print(e) # make sure this starts above 0 and goes down
+            inputs = []
+            outputs = []
+            if e == len(self.hidden_layers) - 1:
+                outputs = self.output_vectors*
+
+            for node in (self.hidden_layers(i-1):
+                inputs.append(node.output[i])
+            self.output_layers[e].weights = gradient_descent(inputs, ,)
+
+
+d
+    def gradient_descent(inputs, output, weights, alpha, num_iter):
+        y = np.array(output)
+        theta = np.array(weights)
+        x = np.array(inputs)
+        # print(theta)
+        x_trans = x.transpose()
+        costs = []
+        for i in range(num_iter):
+            hypothesis = np.dot(x, theta)
+            # print(hypothesis[2])
+            loss = hypothesis - y
+            cost = np.sum(loss ** 2)
+            costs.append(cost)
+            gradient = np.dot(x_trans, loss) / (np.shape(loss))
+            theta = theta - alpha * gradient
+        return (theta.tolist(), costs)
+
+        for i in range(len(self.output)):
+
+    @staticmethod
+    def gradient_descent(inputs, output, weights, alpha, num_iter, rr):
+        y = np.array(output)
+        theta = np.array(weights)
+        x = np.array(inputs)
+        # print(theta)
+        x_trans = x.transpose()
+        costs = []
+        for i in range(num_iter):
+            hypothesis = np.dot(x, theta)
+            # print(hypothesis[2])
+            loss = hypothesis - y
+            cost = np.sum(loss ** 2)
+            costs.append(cost)
+            gradient = np.dot(x_trans, loss) / (np.shape(loss))
+            theta = theta - alpha * gradient
+        return (theta.tolist(), costs)
+
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network
