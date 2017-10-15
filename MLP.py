@@ -80,6 +80,7 @@ class MLP:
         self.forward_prop()
         self.calc_error()
 
+    # TODO Keep historical output
     def forward_prop(self):
         # Iterate through all hidden layers
         for i in range(len(self.hidden_layers)):
