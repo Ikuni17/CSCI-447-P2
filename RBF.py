@@ -20,7 +20,7 @@ class RBF:
         # initialize weight and centers array with random values
         for i in range(num_basis):
             # Put random point from training data as center
-            self.centers.append(self.train_in[random.randint(0, len(self.train_in) - 1)][:len(self.train_in[0]) - 1])
+            self.centers.append(self.train_in[random.randint(0, len(self.train_in) - 1)][:len(self.train_in[0])])
             self.weights.append(random.uniform(0, 100))
             self.sigmas.append(random.uniform(0, 0.3))
 
