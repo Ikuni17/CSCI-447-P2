@@ -2,11 +2,12 @@ import node
 import random
 import numpy as np
 import rosen_generator
+import time
 
 
 class MLP:
-    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.1,
-                 epoch=1000):
+    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.001,
+                 epoch=100):
 
         # Make sure we have nodes per layer defined for all hidden layers
         # Can probably be moved to experiment.py after receiving user input
@@ -41,7 +42,7 @@ class MLP:
         self.learning_rate = learning_rate
         # Number of iterations to train the network, default value of 10000
         self.epoch = epoch
-        self.error_array = []
+        self.overall_error = []
 
         # Initialize input layer
         for i in range(num_inputs):
@@ -109,19 +110,21 @@ class MLP:
     # Function to forward propagate through the network then determine if backprop is needed again
     def train(self):
         for i in range(self.epoch):
+            print("Starting epoch {0} at {1}".format(i, time.ctime(time.time())))
             for j in range(len(self.input_vectors)):
                 self.forward_prop()
                 self.calc_error()
-                error_array.append(error)
                 if j != len(self.input_vectors) - 1:
                     self.update_input()
             self.backprop(self.error)
             # Reset parameters before next iteration
             self.current_input = 0
             self.update_input()
-            # print(self.error)
+            # Save the MSE for this iteration
+            mse = self.error[0] / len(self.input_vectors)
+            print(mse)
+            self.overall_error.append(mse)
             self.error = [0] * len(self.output_layer)
-            # print(self.error/len(self.input_vectors))
 
     # Forward propagation through the network calculating weighted sums
     def forward_prop(self):
@@ -171,23 +174,27 @@ class MLP:
         counter = 0
         for j in range(len(self.output_layer)):
             counter = 0
-            for i in range(len(self.hidden_layers[len(self.hidden_layers)-1])):
-                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].output
+            for i in range(len(self.hidden_layers[len(self.hidden_layers) - 1])):
+                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].output[0]
 
+            #print(len(self.output_layer[j].weights))
             modifier = (self.learning_rate * counter * np.array(err))
-            np.add(self.output_layer[j].weights, modifier)
+            self.output_layer[j].weights = np.add(self.output_layer[j].weights, modifier)
+            #print(len(self.output_layer[j].weights))
 
         for j, hidden_layer in reversed(list(enumerate(self.hidden_layers))):
             for i in range(len(hidden_layer)):
                 counter = 0
                 if j != 0:
                     for node in self.hidden_layers[j - 1]:
-                        counter += node.output
+                        counter += node.output[0]
                 else:
                     for node in self.input_layer:
-                        counter += node.output
+                        counter += node.value
+                #print(len(self.output_layer[j].weights))
                 modifier = (self.learning_rate * counter * np.array(err))
-                np.add(hidden_layer[i].weights, modifier)
+                hidden_layer[i].weights = np.add(hidden_layer[i].weights, modifier)
+                #print(len(self.output_layer[j].weights))
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network
@@ -239,9 +246,12 @@ class MLP:
 def main():
     rosen_in = rosen_generator.generate(input_type=0, dimensions=2)
     mlp_network = MLP(num_inputs=2, num_hidden_layers=1, nodes_per_layer=[5, 5], num_outputs=1, training_data=rosen_in)
+    print("Starting time: {0}".format(time.ctime(time.time())))
     mlp_network.train()
-    mlp_network.print_network()
-    #rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
-    #print(mlp_network.hypothesis_of(rosen_test))
+    print("Ending time: {0}".format(time.ctime(time.time())))
+    # mlp_network.print_network()
+    # rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
+    # print(mlp_network.hypothesis_of(rosen_test))
 
-#main()
+
+main()
