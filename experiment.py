@@ -127,10 +127,10 @@ def perform_experiment():
     print("RBF ending time: {0}".format(time.ctime(time.time())))'''
 
     mlp_threads = []
-    thread_counter = 0
+    thread_counter = 3
 
     #for i in range(len(rosen_datasets)):
-    i = 0
+    i = 1
     current_dim = len(rosen_datasets[i]) - 1
 
     mlp_threads.append(MLPThread(thread_counter, rosen_datasets[i], current_dim, 0, [0], 1))

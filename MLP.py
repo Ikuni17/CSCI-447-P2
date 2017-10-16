@@ -7,7 +7,7 @@ import time
 
 class MLP:
     def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.1,
-                 epoch=10):
+                 epoch=50):
 
         # Make sure we have nodes per layer defined for all hidden layers
         # Can probably be moved to experiment.py after receiving user input
@@ -254,14 +254,19 @@ class MLP:
 
 
 def main():
-    rosen_in = rosen_generator.generate(input_type=0, dimensions=2)
-    mlp_network = MLP(num_inputs=2, num_hidden_layers=0, nodes_per_layer=[5, 5], num_outputs=1, training_data=rosen_in)
+    dimensions = 2
+    rosen_in = rosen_generator.generate(input_type=0, dimensions=dimensions)
+    training_data = rosen_in[:int(len(rosen_in) * 0.8)]
+    testing_data = rosen_in[int(len(rosen_in) * 0.8):]
+    mlp_network = MLP(num_inputs=dimensions, num_hidden_layers=1, nodes_per_layer=[dimensions + 1], num_outputs=1, training_data=training_data)
     print("Starting time: {0}".format(time.ctime(time.time())))
     mlp_network.train()
+    print(mlp_network.overall_error)
+    print(mlp_network.hypothesis_of(testing_data))
     print("Ending time: {0}".format(time.ctime(time.time())))
     # mlp_network.print_network()
     # rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
     # print(mlp_network.hypothesis_of(rosen_test))
 
 
-#main()
+main()
