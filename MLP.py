@@ -41,6 +41,7 @@ class MLP:
         self.learning_rate = learning_rate
         # Number of iterations to train the network, default value of 10000
         self.epoch = epoch
+        self.error_array = []
 
         # Initialize input layer
         for i in range(num_inputs):
@@ -111,6 +112,7 @@ class MLP:
             for j in range(len(self.input_vectors)):
                 self.forward_prop()
                 self.calc_error()
+                error_array.append(error)
                 if j != len(self.input_vectors) - 1:
                     self.update_input()
             self.backprop(self.error)
@@ -170,22 +172,22 @@ class MLP:
         for j in range(len(self.output_layer)):
             counter = 0
             for i in range(len(self.hidden_layers[len(self.hidden_layers)-1])):
-                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].value
+                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].output
 
             modifier = (self.learning_rate * counter * np.array(err))
-            self.output_layer[j].weights += modifier
+            np.add(self.output_layer[j].weights, modifier)
 
         for j, hidden_layer in reversed(list(enumerate(self.hidden_layers))):
             for i in range(len(hidden_layer)):
                 counter = 0
                 if j != 0:
                     for node in self.hidden_layers[j - 1]:
-                        counter += node.value
+                        counter += node.output
                 else:
                     for node in self.input_layer:
-                        counter += node.value
+                        counter += node.output
                 modifier = (self.learning_rate * counter * np.array(err))
-                hidden_layer[i].weights += modifier
+                np.add(hidden_layer[i].weights, modifier)
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network

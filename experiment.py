@@ -3,6 +3,7 @@ import MLP
 import rosen_generator
 import threading
 import time
+import csv
 
 
 # Class to handle an RBF network in a thread, used for experimentation
@@ -21,7 +22,12 @@ class RBFThread(threading.Thread):
         print("Thread {0}: starting {1} TRAINING with {2} dimensions and {3} basis functions at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time())))
         rbf = RBF.RBF(self.num_basis, self.training_data)
-        rbf.train()
+        loss_set = rbf.train()
+        #with open('RBF_{0}.csv'.format(self.thread_ID), 'wb') as csvfile:
+            #results_writ = csv.writer(csvfile, delimiter=' ', quotechar='|',quoting=csv.QUOTE_MINIMAL)
+            #for loss in loss_set:
+                #results_writ.writerow(loss.tolist())
+
         # Test the same RBF network on a portion of the dataset
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} basis functions at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time())))
@@ -51,6 +57,7 @@ class MLPThread(threading.Thread):
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
         result = mlp.hypothesis_of(self.testing_data)
+        print(mlp.error_array)
         print("Thread {0}: {1} result {5} with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time()), result))
 
