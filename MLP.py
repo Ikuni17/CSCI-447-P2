@@ -258,10 +258,11 @@ def main():
     rosen_in = rosen_generator.generate(input_type=0, dimensions=dimensions)
     training_data = rosen_in[:int(len(rosen_in) * 0.8)]
     testing_data = rosen_in[int(len(rosen_in) * 0.8):]
-    mlp_network = MLP(num_inputs=dimensions, num_hidden_layers=1, nodes_per_layer=[dimensions + 1], num_outputs=1, training_data=training_data)
+    mlp_network = MLP(num_inputs=dimensions, num_hidden_layers=2, nodes_per_layer=[dimensions + 1, dimensions + 1], num_outputs=1, training_data=training_data, epoch=100)
     print("Starting time: {0}".format(time.ctime(time.time())))
     mlp_network.train()
-    print(mlp_network.overall_error)
+    for i in range(len(mlp_network.overall_error)):
+        print(mlp_network.overall_error, end=',')
     print(mlp_network.hypothesis_of(testing_data))
     print("Ending time: {0}".format(time.ctime(time.time())))
     # mlp_network.print_network()
