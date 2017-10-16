@@ -253,6 +253,7 @@ class MLP:
             print("{0}".format(self.output_layer[i].weights), end=', ')
 
 
+# Used for testing the code
 def main():
     dimensions = 4
     rosen_in = rosen_generator.generate(input_type=0, dimensions=dimensions)
@@ -270,5 +271,4 @@ def main():
     # rosen_test = rosen_generator.generate(input_type=0, dimensions=2)
     # print(mlp_network.hypothesis_of(rosen_test))
 
-
-main()
+# main()

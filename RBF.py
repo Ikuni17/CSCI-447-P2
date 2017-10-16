@@ -25,7 +25,7 @@ class RBF:
             self.sigmas.append(random.uniform(0, 0.3))
 
     def train(self):
-        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.01, 100)
+        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.01, 500000)
         self.weights = out[0]
         # print(self.weights)
         print(out[1])
