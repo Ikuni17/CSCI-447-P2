@@ -220,7 +220,7 @@ class MLP:
         for k in range(len(self.output_layer)):
             self.error[k] = self.error[k] / len(self.input_vectors)
 
-        return self.error[k]
+        return self.error
 
     # Split the data into input and output vectors
     def process_data(self, dataset):

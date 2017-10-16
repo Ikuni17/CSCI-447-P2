@@ -57,7 +57,6 @@ class MLPThread(threading.Thread):
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
         result = mlp.hypothesis_of(self.testing_data)
-        print(mlp.overall_error)
         print("Thread {0}: {1} result {5} with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time()), result))
 
@@ -88,7 +87,7 @@ def perform_experiment():
     for i in range(2, 7):
         rosen_datasets.append(rosen_generator.generate(0, i))
 
-    rbf_threads = []
+    '''rbf_threads = []
     thread_counter = 0
 
     for i in range(len(rosen_datasets)):
@@ -97,15 +96,15 @@ def perform_experiment():
         rbf_threads.append(RBFThread(thread_counter, rosen_datasets[i], 5))
         thread_counter += 1
         rbf_threads.append(RBFThread(thread_counter, rosen_datasets[i], 7))
-        thread_counter += 1
+        thread_counter += 1'''
 
     print("Overall and RBF starting time: {0}".format(time.ctime(time.time())))
-    for i in range(len(rbf_threads)):
+    '''for i in range(len(rbf_threads)):
         rbf_threads[i].start()
 
     for i in range(len(rbf_threads)):
         rbf_threads[i].join()
-    print("RBF ending time: {0}".format(time.ctime(time.time())))
+    print("RBF ending time: {0}".format(time.ctime(time.time())))'''
 
     mlp_threads = []
     thread_counter = 0
