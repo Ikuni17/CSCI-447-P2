@@ -167,7 +167,7 @@ class MLP:
     # iteration.
     def calc_error(self):
         for i in range(len(self.output_layer)):
-            self.error[i] += (self.output_layer[i].value - self.output_layer[i].output[0]) ** 2
+            self.error[i] += (self.output_layer[i].value - self.output_layer[i].output[0])
 
     def backprop(self, err):
         # err is total error on output layer (deltai )
