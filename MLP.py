@@ -110,7 +110,7 @@ class MLP:
     # Function to forward propagate through the network then determine if backprop is needed again
     def train(self):
         for i in range(self.epoch):
-            #print("Starting epoch {0} at {1}".format(i, time.ctime(time.time())))
+            # print("Starting epoch {0} at {1}".format(i, time.ctime(time.time())))
             for j in range(len(self.input_vectors)):
                 self.forward_prop()
                 self.calc_error()
@@ -127,10 +127,10 @@ class MLP:
             self.current_input = 0
             self.update_input()
 
-            #print(self.error[0])
+            # print(self.error[0])
             self.overall_error.append(self.error)
             self.error = [0] * len(self.output_layer)
-        #print(self.overall_error)
+            # print(self.overall_error)
 
     # Forward propagation through the network calculating weighted sums
     def forward_prop(self):
@@ -254,15 +254,16 @@ class MLP:
 
 
 def main():
-    dimensions = 2
+    dimensions = 6
     rosen_in = rosen_generator.generate(input_type=0, dimensions=dimensions)
     training_data = rosen_in[:int(len(rosen_in) * 0.8)]
     testing_data = rosen_in[int(len(rosen_in) * 0.8):]
-    mlp_network = MLP(num_inputs=dimensions, num_hidden_layers=2, nodes_per_layer=[dimensions + 1, dimensions + 1], num_outputs=1, training_data=training_data, epoch=100)
+    mlp_network = MLP(num_inputs=dimensions, num_hidden_layers=2, nodes_per_layer=[dimensions + 1, dimensions + 1],
+                      num_outputs=1, training_data=training_data, learning_rate=0.1, epoch=11)
     print("Starting time: {0}".format(time.ctime(time.time())))
     mlp_network.train()
     for i in range(len(mlp_network.overall_error)):
-        print(mlp_network.overall_error, end=',')
+        print(mlp_network.overall_error[i][0], end=',')
     print(mlp_network.hypothesis_of(testing_data))
     print("Ending time: {0}".format(time.ctime(time.time())))
     # mlp_network.print_network()
