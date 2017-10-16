@@ -7,7 +7,7 @@ import time
 
 class MLP:
     def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.1,
-                 epoch=100):
+                 epoch=10):
 
         # Make sure we have nodes per layer defined for all hidden layers
         # Can probably be moved to experiment.py after receiving user input
@@ -130,6 +130,7 @@ class MLP:
             #print(self.error[0])
             self.overall_error.append(self.error)
             self.error = [0] * len(self.output_layer)
+        print(self.overall_error)
 
     # Forward propagation through the network calculating weighted sums
     def forward_prop(self):
@@ -179,8 +180,12 @@ class MLP:
         counter = 0
         for j in range(len(self.output_layer)):
             counter = 0
-            for i in range(len(self.hidden_layers[len(self.hidden_layers) - 1])):
-                counter += self.hidden_layers[len(self.hidden_layers) - 1][i].output[0]
+            if len(self.hidden_layers) == 0:
+                for i in range(len(self.output_layer)):
+                    counter += self.output_layer[i].output[0]
+            else:
+                for i in range(len(self.hidden_layers[len(self.hidden_layers) - 1])):
+                    counter += self.hidden_layers[len(self.hidden_layers) - 1][i].output[0]
 
             modifier = (self.learning_rate * counter * np.array(err))
             self.output_layer[j].weights = np.add(self.output_layer[j].weights, modifier)
@@ -250,7 +255,7 @@ class MLP:
 
 def main():
     rosen_in = rosen_generator.generate(input_type=0, dimensions=2)
-    mlp_network = MLP(num_inputs=2, num_hidden_layers=1, nodes_per_layer=[5, 5], num_outputs=1, training_data=rosen_in)
+    mlp_network = MLP(num_inputs=2, num_hidden_layers=0, nodes_per_layer=[5, 5], num_outputs=1, training_data=rosen_in)
     print("Starting time: {0}".format(time.ctime(time.time())))
     mlp_network.train()
     print("Ending time: {0}".format(time.ctime(time.time())))
