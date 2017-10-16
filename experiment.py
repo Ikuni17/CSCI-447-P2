@@ -11,7 +11,7 @@ class RBFThread(threading.Thread):
     def __init__(self, thread_ID, dataset, num_basis):
         threading.Thread.__init__(self)
         self.thread_ID = thread_ID
-        self.name = "RBF"
+        self.name = "RBF{0}".format(self.thread_ID)
         self.num_basis = num_basis
         self.num_dim = len(dataset[0]) - 1
         self.training_data = dataset[:int(len(dataset) * 0.8)]
@@ -32,7 +32,7 @@ class RBFThread(threading.Thread):
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} basis functions at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time())))
         result = rbf.hypothesis_of(self.testing_data)
-        print("Thread {0}: {1} result {5} with {2} dimensions and {3} basis functions at {4}".format(self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time()),'?'))
+        print("Thread {0}: {1} result {5} with {2} dimensions and {3} basis functions at {4}".format(self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time()), '?'))
 
 
 # Class to handle an MLP network in a thread, used for experimentation
@@ -40,7 +40,7 @@ class MLPThread(threading.Thread):
     def __init__(self, thread_ID, dataset, num_inputs, num_hidden_layers, num_nodes_per_layer, num_outputs=1):
         threading.Thread.__init__(self)
         self.thread_ID = thread_ID
-        self.name = "MLP"
+        self.name = "MLP".format(self.thread_ID)
         self.num_inputs = num_inputs
         self.num_dim = len(dataset[0]) - 1
         self.num_hidden_layers = num_hidden_layers
@@ -57,7 +57,7 @@ class MLPThread(threading.Thread):
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
         result = mlp.hypothesis_of(self.testing_data)
-        print(mlp.error_array)
+        print(mlp.overall_error)
         print("Thread {0}: {1} result {5} with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time()), result))
 
