@@ -4,6 +4,7 @@ import rosen_generator
 import threading
 import time
 import csv
+import numpy as np
 
 
 # Class to handle an RBF network in a thread, used for experimentation
@@ -23,10 +24,9 @@ class RBFThread(threading.Thread):
             self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time())))
         rbf = RBF.RBF(self.num_basis, self.training_data)
         loss_set = rbf.train()
-        #with open('RBF_{0}.csv'.format(self.thread_ID), 'wb') as csvfile:
-            #results_writ = csv.writer(csvfile, delimiter=' ', quotechar='|',quoting=csv.QUOTE_MINIMAL)
-            #for loss in loss_set:
-                #results_writ.writerow(loss.tolist())
+        with open('RBF_{0}.csv'.format(self.thread_ID), 'wb') as csvfile:
+            results_writ = csv.writer(csvfile, delimiter=' ', quotechar='|',quoting=csv.QUOTE_MINIMAL)
+            results_writ.writerow(loss_set)
 
         # Test the same RBF network on a portion of the dataset
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} basis functions at {4}".format(

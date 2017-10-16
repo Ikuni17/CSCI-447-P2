@@ -4,7 +4,7 @@ import numpy as np
 
 
 class RBF:
-    sigma = 0.1
+    sigma = 0.0005
 
     def __init__(self, num_basis, train_in):
         self.train_in = []
@@ -25,9 +25,10 @@ class RBF:
             self.sigmas.append(random.uniform(0, 0.3))
 
     def train(self):
-        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.001, 100)
+        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.01, 10000)
         self.weights = out[0]
         # print(self.weights)
+        print(out[1])
         return out[1]
 
         # for i in range(len(output)):
@@ -57,12 +58,7 @@ class RBF:
 
     @staticmethod
     def gaussian_function(datapoint, center, sigma):
-        try:
-            dist = np.linalg.norm(np.array(datapoint) - np.array(center))
-        except ValueError:
-            print(datapoint)
-            print(center)
-
+        dist = np.linalg.norm(np.array(datapoint) - np.array(center))
         return math.exp(-(dist ** 2) / 2 * sigma ** 2)
 
     @staticmethod
@@ -85,7 +81,7 @@ class RBF:
         for i in range(num_iter):
             hypothesis = np.dot(x, theta)
             loss = hypothesis - y
-            cost = np.sum(loss ** 2)
+            cost = np.sum(loss ** 2)/len(hypothesis)
             costs.append(cost)
             gradient = np.dot(x_trans, loss) / (np.shape(loss))
             theta = theta - alpha * gradient
