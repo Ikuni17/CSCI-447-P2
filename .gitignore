@@ -1,6 +1,9 @@
 # system rules
 .DS_Store
 .idea/
+
+Pipfile
+Pipfile.lock
 ### Vim template
 # Swap
 [._]*.s[a-v][a-z]
