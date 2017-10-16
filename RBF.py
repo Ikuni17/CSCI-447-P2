@@ -4,7 +4,7 @@ import numpy as np
 
 
 class RBF:
-    sigma = 0.0005
+    sigma = 0.05
 
     def __init__(self, num_basis, train_in):
         self.train_in = []
@@ -25,7 +25,7 @@ class RBF:
             self.sigmas.append(random.uniform(0, 0.3))
 
     def train(self):
-        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.01, 10000)
+        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.01, 100)
         self.weights = out[0]
         # print(self.weights)
         print(out[1])
