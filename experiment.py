@@ -54,11 +54,20 @@ class MLPThread(threading.Thread):
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
         mlp = MLP.MLP(self.num_inputs, self.num_hidden_layers, self.num_nodes_per_layer, self.num_outputs,
                       self.training_data)
+        with open('\MLP Results\MLP{0} Learning Curve.csv'.format(self.thread_ID), 'w', newline='') as csvfile:
+            temp = []
+            for i in range(len(mlp.overall_error)):
+                temp.append(mlp.overall_error[i][0])
+            writer = csv.writer(csvfile, delimiter=',')
+            writer.writerow(temp)
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
         result = mlp.hypothesis_of(self.testing_data)
         print("Thread {0}: {1} result {5} with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time()), result))
+        with open('\MLP Results\MLP{0} Test.csv'.format(self.thread_ID), 'w', newline='') as csvfile:
+            writer = csvfile(csvfile, delimiter=',')
+            writer.writerow(result)
 
 
 def create_folds(data, num_folds):
