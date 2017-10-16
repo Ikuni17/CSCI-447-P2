@@ -6,7 +6,7 @@ import time
 
 
 class MLP:
-    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.1,
+    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.001,
                  epoch=100):
 
         # Make sure we have nodes per layer defined for all hidden layers
@@ -121,7 +121,9 @@ class MLP:
             self.current_input = 0
             self.update_input()
             # Save the MSE for this iteration
-            self.overall_error.append(self.error[0] / len(self.input_vectors))
+            mse = self.error[0] / len(self.input_vectors)
+            print(mse)
+            self.overall_error.append(mse)
             self.error = [0] * len(self.output_layer)
 
     # Forward propagation through the network calculating weighted sums
@@ -175,8 +177,10 @@ class MLP:
             for i in range(len(self.hidden_layers[len(self.hidden_layers) - 1])):
                 counter += self.hidden_layers[len(self.hidden_layers) - 1][i].output[0]
 
+            #print(len(self.output_layer[j].weights))
             modifier = (self.learning_rate * counter * np.array(err))
-            np.add(self.output_layer[j].weights, modifier)
+            self.output_layer[j].weights = np.add(self.output_layer[j].weights, modifier)
+            #print(len(self.output_layer[j].weights))
 
         for j, hidden_layer in reversed(list(enumerate(self.hidden_layers))):
             for i in range(len(hidden_layer)):
@@ -187,8 +191,10 @@ class MLP:
                 else:
                     for node in self.input_layer:
                         counter += node.value
+                #print(len(self.output_layer[j].weights))
                 modifier = (self.learning_rate * counter * np.array(err))
-                np.add(hidden_layer[i].weights, modifier)
+                hidden_layer[i].weights = np.add(hidden_layer[i].weights, modifier)
+                #print(len(self.output_layer[j].weights))
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network
