@@ -25,9 +25,8 @@ class RBFThread(threading.Thread):
         # Test the same RBF network on a portion of the dataset
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} basis functions at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time())))
-        result = rbf.hypothesis(self.testing_data)
-        print("Thread {0}: {1} result {5} with {2} dimensions and {3} basis functions at {4}".format(
-            self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time()), result))
+        result = rbf.hypothesis_of(self.testing_data)
+        print("Thread {0}: {1} result {5} with {2} dimensions and {3} basis functions at {4}".format(self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time()),'?'))
 
 
 # Class to handle an MLP network in a thread, used for experimentation
@@ -73,7 +72,7 @@ def fold_training(network, data):
         for j in data:
             if j != i:
                 current_data_set.append(data[i])
-        print('\n' + str(current_data_set) + '\n')
+        #print('\n' + str(current_data_set) + '\n')
         # network.train(current_data_set)
 
 

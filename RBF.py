@@ -20,20 +20,31 @@ class RBF:
         # initialize weight and centers array with random values
         for i in range(num_basis):
             # Put random point from training data as center
-            self.centers.append(self.train_in[random.randint(0, len(self.train_in) - 1)][:len(self.train_in[0])])
+            self.centers.append(self.train_in[random.randint(0, len(self.train_in))])
             self.weights.append(random.uniform(0, 100))
             self.sigmas.append(random.uniform(0, 0.3))
 
     def train(self):
-        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out,
-                                    self.weights, 0.001, 100)
+        out = self.gradient_descent(RBF.get_outputs(self.train_in, self.weights, self.centers), self.train_out, self.weights, 0.001, 100)
         self.weights = out[0]
         # print(self.weights)
-        output = self.hypothesis(self.train_in)
-		return out[1]
+        return out[1]
 
         # for i in range(len(output)):
         # print('Expected out: {0}, Actual out: {1}'.format(self.train_out[i], output[i]))
+
+
+    def hypothesis_of(self, data_in):
+        output = []
+        inputs= []
+        for x in data_in:
+            inputs.append(x[:len(x)-1])
+        for datapoint in inputs:
+            value = 0
+            for i in range(len(self.weights)):
+                value += self.weights[i] * RBF.gaussian_function(datapoint, self.centers[i], RBF.sigma)
+            output.append(value)
+        return output
 
     def hypothesis(self, data_in):
         output = []
@@ -46,7 +57,12 @@ class RBF:
 
     @staticmethod
     def gaussian_function(datapoint, center, sigma):
-        dist = np.linalg.norm(np.array(datapoint) - np.array(center))
+        try:
+            dist = np.linalg.norm(np.array(datapoint) - np.array(center))
+        except ValueError:
+            print(datapoint)
+            print(center)
+
         return math.exp(-(dist ** 2) / 2 * sigma ** 2)
 
     @staticmethod
