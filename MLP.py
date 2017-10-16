@@ -110,7 +110,7 @@ class MLP:
     # Function to forward propagate through the network then determine if backprop is needed again
     def train(self):
         for i in range(self.epoch):
-            print("Starting epoch {0} at {1}".format(i, time.ctime(time.time())))
+            #print("Starting epoch {0} at {1}".format(i, time.ctime(time.time())))
             for j in range(len(self.input_vectors)):
                 self.forward_prop()
                 self.calc_error()
