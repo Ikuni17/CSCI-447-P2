@@ -254,12 +254,12 @@ class MLP:
 
 
 def main():
-    dimensions = 5
+    dimensions = 4
     rosen_in = rosen_generator.generate(input_type=0, dimensions=dimensions)
     training_data = rosen_in[:int(len(rosen_in) * 0.8)]
     testing_data = rosen_in[int(len(rosen_in) * 0.8):]
-    mlp_network = MLP(num_inputs=dimensions, num_hidden_layers=0, nodes_per_layer=[dimensions + 1, dimensions + 1],
-                      num_outputs=1, training_data=training_data, learning_rate=0.1, epoch=16)
+    mlp_network = MLP(num_inputs=dimensions, num_hidden_layers=0, nodes_per_layer=[],
+                      num_outputs=1, training_data=training_data, learning_rate=0.1, epoch=25)
     print("Starting time: {0}".format(time.ctime(time.time())))
     mlp_network.train()
     for i in range(len(mlp_network.overall_error)):
