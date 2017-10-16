@@ -25,14 +25,20 @@ class RBFThread(threading.Thread):
         rbf = RBF.RBF(self.num_basis, self.training_data)
         loss_set = rbf.train()
         with open('RBF_{0}.csv'.format(self.thread_ID), 'wb') as csvfile:
-            results_writ = csv.writer(csvfile, delimiter=' ', quotechar='|',quoting=csv.QUOTE_MINIMAL)
+            results_writ = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             results_writ.writerow(loss_set)
 
         # Test the same RBF network on a portion of the dataset
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} basis functions at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time())))
         result = rbf.hypothesis_of(self.testing_data)
-        print("Thread {0}: {1} result {5} with {2} dimensions and {3} basis functions at {4}".format(self.thread_ID, self.name, self.num_dim, self.num_basis, time.ctime(time.time()), '?'))
+        print("Thread {0}: {1} result {5} with {2} dimensions and {3} basis functions at {4}".format(self.thread_ID,
+                                                                                                     self.name,
+                                                                                                     self.num_dim,
+                                                                                                     self.num_basis,
+                                                                                                     time.ctime(
+                                                                                                         time.time()),
+                                                                                                     '?'))
 
 
 # Class to handle an MLP network in a thread, used for experimentation
@@ -54,12 +60,25 @@ class MLPThread(threading.Thread):
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
         mlp = MLP.MLP(self.num_inputs, self.num_hidden_layers, self.num_nodes_per_layer, self.num_outputs,
                       self.training_data)
+        mlp.train()
+        temp = []
+        print(len(mlp.overall_error))
+        with open('MLP{0} Learning Curve.csv'.format(self.thread_ID), 'w', newline='') as csvfile:
+            for i in range(len(mlp.overall_error)):
+                temp.append(mlp.overall_error[i][0])
+            writer = csv.writer(csvfile, delimiter=',')
+            writer.writerow(temp)
+            print(temp)
+
         print("Thread {0}: starting {1} TESTING with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
+
         result = mlp.hypothesis_of(self.testing_data)
-        print(mlp.overall_error)
         print("Thread {0}: {1} result {5} with {2} dimensions and {3} hidden layers at {4}".format(
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time()), result))
+        with open('MLP{0} Test.csv'.format(self.thread_ID), 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile, delimiter=',')
+            writer.writerow(result)
 
 
 def create_folds(data, num_folds):
@@ -79,8 +98,8 @@ def fold_training(network, data):
         for j in data:
             if j != i:
                 current_data_set.append(data[i])
-        #print('\n' + str(current_data_set) + '\n')
-        # network.train(current_data_set)
+                # print('\n' + str(current_data_set) + '\n')
+                # network.train(current_data_set)
 
 
 def perform_experiment():
@@ -88,7 +107,7 @@ def perform_experiment():
     for i in range(2, 7):
         rosen_datasets.append(rosen_generator.generate(0, i))
 
-    rbf_threads = []
+    '''rbf_threads = []
     thread_counter = 0
 
     for i in range(len(rosen_datasets)):
@@ -97,29 +116,30 @@ def perform_experiment():
         rbf_threads.append(RBFThread(thread_counter, rosen_datasets[i], 5))
         thread_counter += 1
         rbf_threads.append(RBFThread(thread_counter, rosen_datasets[i], 7))
-        thread_counter += 1
+        thread_counter += 1'''
 
     print("Overall and RBF starting time: {0}".format(time.ctime(time.time())))
-    for i in range(len(rbf_threads)):
+    '''for i in range(len(rbf_threads)):
         rbf_threads[i].start()
 
     for i in range(len(rbf_threads)):
         rbf_threads[i].join()
-    print("RBF ending time: {0}".format(time.ctime(time.time())))
+    print("RBF ending time: {0}".format(time.ctime(time.time())))'''
 
     mlp_threads = []
-    thread_counter = 0
+    thread_counter = 3
 
-    for i in range(len(rosen_datasets)):
-        current_dim = len(rosen_datasets[i]) - 1
+    #for i in range(len(rosen_datasets)):
+    i = 1
+    current_dim = len(rosen_datasets[i]) - 1
 
-        mlp_threads.append(MLPThread(thread_counter, rosen_datasets[i], current_dim, 0, [0], 1))
-        thread_counter += 1
-        mlp_threads.append(MLPThread(thread_counter, rosen_datasets[i], current_dim, 1, [current_dim + 1], 1))
-        thread_counter += 1
-        mlp_threads.append(
-            MLPThread(thread_counter, rosen_datasets[i], current_dim, 2, [current_dim + 1, current_dim + 1], 1))
-        thread_counter += 1
+    mlp_threads.append(MLPThread(thread_counter, rosen_datasets[i], current_dim, 0, [0], 1))
+    thread_counter += 1
+    mlp_threads.append(MLPThread(thread_counter, rosen_datasets[i], current_dim, 1, [current_dim + 1], 1))
+    thread_counter += 1
+    mlp_threads.append(
+        MLPThread(thread_counter, rosen_datasets[i], current_dim, 2, [current_dim + 1, current_dim + 1], 1))
+    thread_counter += 1
 
     print("MLP starting time: {0}".format(time.ctime(time.time())))
     for i in range(len(mlp_threads)):
@@ -127,6 +147,7 @@ def perform_experiment():
 
     for i in range(len(mlp_threads)):
         mlp_threads[i].join()
+
     print("Overall and MLP ending time: {0}".format(time.ctime(time.time())))
 
 
