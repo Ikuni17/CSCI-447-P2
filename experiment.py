@@ -60,9 +60,10 @@ class MLPThread(threading.Thread):
             self.thread_ID, self.name, self.num_dim, self.num_hidden_layers, time.ctime(time.time())))
         mlp = MLP.MLP(self.num_inputs, self.num_hidden_layers, self.num_nodes_per_layer, self.num_outputs,
                       self.training_data)
+        mlp.train()
         temp = []
+        print(len(mlp.overall_error))
         with open('MLP{0} Learning Curve.csv'.format(self.thread_ID), 'w', newline='') as csvfile:
-
             for i in range(len(mlp.overall_error)):
                 temp.append(mlp.overall_error[i][0])
             writer = csv.writer(csvfile, delimiter=',')

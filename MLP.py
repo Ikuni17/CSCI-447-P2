@@ -130,7 +130,7 @@ class MLP:
             #print(self.error[0])
             self.overall_error.append(self.error)
             self.error = [0] * len(self.output_layer)
-        print(self.overall_error)
+        #print(self.overall_error)
 
     # Forward propagation through the network calculating weighted sums
     def forward_prop(self):
@@ -264,4 +264,4 @@ def main():
     # print(mlp_network.hypothesis_of(rosen_test))
 
 
-main()
+#main()
