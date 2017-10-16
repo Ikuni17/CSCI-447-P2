@@ -6,7 +6,7 @@ import time
 
 
 class MLP:
-    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.001,
+    def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, num_outputs, training_data, learning_rate=0.1,
                  epoch=100):
 
         # Make sure we have nodes per layer defined for all hidden layers
@@ -116,14 +116,19 @@ class MLP:
                 self.calc_error()
                 if j != len(self.input_vectors) - 1:
                     self.update_input()
+
+            # Average the error
+            for k in range(len(self.output_layer)):
+                self.error[k] = self.error[k] / len(self.input_vectors)
+
+            # Do backprop
             self.backprop(self.error)
             # Reset parameters before next iteration
             self.current_input = 0
             self.update_input()
-            # Save the MSE for this iteration
-            mse = self.error[0] / len(self.input_vectors)
-            print(mse)
-            self.overall_error.append(mse)
+
+            #print(self.error[0])
+            self.overall_error.append(self.error)
             self.error = [0] * len(self.output_layer)
 
     # Forward propagation through the network calculating weighted sums
@@ -177,10 +182,8 @@ class MLP:
             for i in range(len(self.hidden_layers[len(self.hidden_layers) - 1])):
                 counter += self.hidden_layers[len(self.hidden_layers) - 1][i].output[0]
 
-            #print(len(self.output_layer[j].weights))
             modifier = (self.learning_rate * counter * np.array(err))
             self.output_layer[j].weights = np.add(self.output_layer[j].weights, modifier)
-            #print(len(self.output_layer[j].weights))
 
         for j, hidden_layer in reversed(list(enumerate(self.hidden_layers))):
             for i in range(len(hidden_layer)):
@@ -191,10 +194,9 @@ class MLP:
                 else:
                     for node in self.input_layer:
                         counter += node.value
-                #print(len(self.output_layer[j].weights))
+
                 modifier = (self.learning_rate * counter * np.array(err))
                 hidden_layer[i].weights = np.add(hidden_layer[i].weights, modifier)
-                #print(len(self.output_layer[j].weights))
 
     def hypothesis_of(self, testing_data):
         # Reset parameters before testing the network
@@ -214,8 +216,11 @@ class MLP:
             if i != n - 1:
                 self.update_input()
 
-        # Return the MSE for the testing data
-        return np.dot((1 / n), self.error)
+        # Average the error
+        for k in range(len(self.output_layer)):
+            self.error[k] = self.error[k] / len(self.input_vectors)
+
+        return self.error[k]
 
     # Split the data into input and output vectors
     def process_data(self, dataset):
