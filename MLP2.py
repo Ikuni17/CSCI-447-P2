@@ -3,7 +3,7 @@ import numpy as np
 import rosen_generator as rosen
 
 class MLP2:
-	def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, training_data, learning_rate=0.1, iterations=1000):
+	def __init__(self, num_inputs, num_hidden_layers, nodes_per_layer, training_data, learning_rate=0.01, iterations=1000):
 		self.weights = [] # Each numpy array in this represents the weights coming into a node
 		self.inputs = []
 		self.train_in = []
@@ -42,7 +42,6 @@ class MLP2:
 					temp.append(random.uniform(0, 10))
 				self.weights[i].append(np.array(temp))
 		self.activation.append(np.array([]))
-		
 		# print('Input_layer: {0}'.format(self.activation[0]))
 
 	def train(self):
@@ -51,6 +50,8 @@ class MLP2:
 			error = self.backprop()
 			if i%100 == 0:
 				print('Error at iteration {0}: {1}'.format(i, error))
+				#if error < 0.1:
+					#print('Actual: {0}, Predicted: {1}'.format(self.train_out[:3], self.activation[len(self.activation)-1][:3][:3]))
 
 	# updates the activation arrays and the output
 	def feedforward(self):
@@ -66,13 +67,14 @@ class MLP2:
 				self.activation[i+1] = np.tanh(temp)
 
 	def backprop(self):
-		#print('Expected: {0}, Actual: {1}'.format(self.train_out[0], self.activation[len(self.activation)-1]))
-		error = np.average(np.array(self.train_out).transpose() - self.activation[len(self.activation)-1])
+		error = np.average(np.subtract(np.array(self.train_out), self.activation[len(self.activation)-1][0]))
+		#print('output: {0} actual: {1}, error: {2}'.format(self.activation[len(self.activation)-1][0], self.train_out, error))
 		for i, layer in reversed(list(enumerate(self.weights))):
 			for j in range(len(layer)):
 				activ_out = self.activation[i+1][j]
-				modifiers = self.learning_rate*activ_out*error
-				self.weights[i][j] = np.add(self.weights[i][j], np.sum(modifiers))
+				modifiers = activ_out*error
+				#print('activ_out: {0}, error: {1}'.format(activ_out, error))
+				self.weights[i][j] = np.add(self.weights[i][j], self.learning_rate*np.average(modifiers))
 		return error
 
 	def print_nn(self):
@@ -85,6 +87,17 @@ class MLP2:
 		for layer in self.activation:
 				print(layer.shape)
 
+	def change_training(self, training_data):
+		for x in training_data:
+			self.train_in.append(x[:num_inputs])
+			self.train_out.append(x[num_inputs:])
+		self.actiaviton[0] = np.array(self.train_in).transpose()
+	
+	def calc_error(self, testing_data)
+		self.change_training(training_data)
+		self.feedforward()
+		return np.average(np.subtract(np.array(self.train_out), self.activation[len(self.activation)-1][0]))
+	
 	# Calcualte the acitvations of a node given it's wieghts and the values coming into the node
 	@staticmethod
 	def activ_fun(activ, weights):
@@ -96,7 +109,7 @@ class MLP2:
 def main():
 	num_inputs = 2
 	training_data = rosen.generate(0, num_inputs)
-	MLP = MLP2(num_inputs, 2, 3, training_data)
+	MLP = MLP2(num_inputs, 2, 8, training_data)
 	MLP.train()
 
 
